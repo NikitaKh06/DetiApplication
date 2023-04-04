@@ -27,7 +27,7 @@ import com.example.detiapplication.presentation.theme.LightGreen
 
 //@Preview (showSystemUi = true)
 @Composable
-fun SignInScreen() {
+fun ParentSignInScreen() {
     Column {
         Text(
             text = "deti",
@@ -231,7 +231,7 @@ fun ParentChangePasswordScreen() {
     }
 }
 
-@Preview (showSystemUi = true)
+//@Preview (showSystemUi = true)
 @Composable
 fun ParentInfoScreen() {
     Column {
@@ -321,7 +321,7 @@ fun ParentInfoScreen() {
 
 //@Preview (showSystemUi = true)
 @Composable
-fun QrScreen() {
+fun ParentQrScreen() {
     Column {
         Text(
             text = "Отсканируйте QR код ребенка",
