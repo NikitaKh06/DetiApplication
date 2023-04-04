@@ -1,5 +1,7 @@
 package com.example.detiapplication.presentation
 
+import androidx.compose.runtime.Composable
+
 sealed class Screens(val route: String) {
     object SelectionScreen: Screens(route = "selection_screen")
 
