@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.detiapplication.R
 import com.example.detiapplication.presentation.theme.Black
 import com.example.detiapplication.presentation.theme.Green
@@ -25,7 +26,7 @@ import com.example.detiapplication.presentation.theme.LightGreen
 
 //@Preview(showSystemUi = true)
 @Composable
-fun ChildrenSignInScreen() {
+fun ChildrenSignInScreen(navController: NavController) {
     Column {
         Text(
             text = "deti",
@@ -90,7 +91,9 @@ fun ChildrenSignInScreen() {
                 .fillMaxWidth(),
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(Green),
-            onClick = {}
+            onClick = {
+
+            }
         ) {
             Text(
                 text = "Продолжить",
@@ -112,8 +115,9 @@ fun ChildrenSignInScreen() {
             shape = RoundedCornerShape(15.dp),
             border = BorderStroke(5.dp, Green),
             colors = ButtonDefaults.buttonColors(Color.White),
-            onClick = {},
-
+            onClick = {
+                navController.navigate(Screens.ChildrenRegistrationScreen.route)
+            },
 
             ) {
             Text(
@@ -231,13 +235,15 @@ fun ChilrenChangePasswordScreen() {
 
 //@Preview (showSystemUi = true)
 @Composable
-fun ChidlrenRegistrationScreen() {
+fun ChidlrenRegistrationScreen(navController: NavController) {
     Column {
         IconButton(
             modifier = Modifier
                 .padding(top = 15.dp)
                 .align(Alignment.CenterHorizontally),
-            onClick = {}
+            onClick = {
+                navController.navigate(Screens.ChildrenInfoScreen.route)
+            }
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.avatar_edit),
@@ -307,7 +313,9 @@ fun ChidlrenRegistrationScreen() {
                 .align(Alignment.CenterHorizontally),
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(Green),
-            onClick = {}
+            onClick = {
+                navController.navigate(Screens.ChildrenInfoScreen.route)
+            }
         ) {
             Text(
                 text = "Продолжить",
@@ -337,7 +345,7 @@ fun ChidlrenRegistrationScreen() {
 
 //@Preview (showSystemUi = true)
 @Composable
-fun ChildrenInfoScreen() {
+fun ChildrenInfoScreen(navController: NavController) {
     Column {
         Text(
             text = "Личные данные",
@@ -413,7 +421,9 @@ fun ChildrenInfoScreen() {
                 .fillMaxWidth(),
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(Green),
-            onClick = {}
+            onClick = {
+                navController.navigate(Screens.ChildrenQrScreen.route)
+            }
         ) {
             Text(
                 text = "Продолжить",

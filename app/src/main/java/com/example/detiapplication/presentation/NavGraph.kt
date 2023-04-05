@@ -11,10 +11,57 @@ fun SetupNavGraph(navController: NavHostController) {
         navController = navController,
         startDestination = Screens.SelectionScreen.route
     ) {
+
+        //Welcome
         composable(
             route = Screens.SelectionScreen.route
         ) {
-            SelectionScreen()
+            SelectionScreen(navController = navController)
+        }
+
+        //Children
+        composable(
+            route = Screens.ChildrenSignInScreen.route
+        ) {
+            ChildrenSignInScreen(navController = navController)
+        }
+        composable(
+            route = Screens.ChildrenRegistrationScreen.route
+        ) {
+            ChidlrenRegistrationScreen(navController = navController)
+        }
+        composable(
+            route = Screens.ChildrenInfoScreen.route
+        ) {
+            ChildrenInfoScreen(navController = navController)
+        }
+        composable(
+            route = Screens.ChildrenQrScreen.route
+        ) {
+            ChildrenQrScreen()
+        }
+
+
+        //Parent
+        composable(
+            route = Screens.ParentSignInScreen.route
+        ) {
+            ParentSignInScreen(navController = navController)
+        }
+        composable(
+            route = Screens.ParentRegistrationScreen.route
+        ) {
+            ParentRegistrationScreen(navController = navController)
+        }
+        composable(
+            route = Screens.ParentInfoScreen.route
+        ) {
+            ParentInfoScreen(navController = navController)
+        }
+        composable(
+            route = Screens.ParentQrScreen.route
+        ) {
+            ParentQrScreen()
         }
     }
 }

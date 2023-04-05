@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.detiapplication.R
 import com.example.detiapplication.presentation.theme.Black
 import com.example.detiapplication.presentation.theme.Green
@@ -27,7 +28,7 @@ import com.example.detiapplication.presentation.theme.LightGreen
 
 //@Preview (showSystemUi = true)
 @Composable
-fun ParentSignInScreen() {
+fun ParentSignInScreen(navController: NavController) {
     Column {
         Text(
             text = "deti",
@@ -114,8 +115,9 @@ fun ParentSignInScreen() {
             shape = RoundedCornerShape(15.dp),
             border = BorderStroke(5.dp, Green),
             colors = ButtonDefaults.buttonColors(Color.White),
-            onClick = {},
-
+            onClick = {
+                navController.navigate(route = Screens.ParentRegistrationScreen.route)
+            },
 
             ) {
             Text(
@@ -233,7 +235,7 @@ fun ParentChangePasswordScreen() {
 
 //@Preview (showSystemUi = true)
 @Composable
-fun ParentInfoScreen() {
+fun ParentInfoScreen(navController: NavController) {
     Column {
         Text(
             text = "Личные данные",
@@ -291,7 +293,9 @@ fun ParentInfoScreen() {
                 .fillMaxWidth(),
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(Green),
-            onClick = {}
+            onClick = {
+                navController.navigate(Screens.ParentQrScreen.route)
+            }
         ) {
             Text(
                 text = "Продолжить",
@@ -403,7 +407,7 @@ fun ParentQrScreen() {
 
 //@Preview (showSystemUi = true)
 @Composable
-fun ParentRegistrationScreen() {
+fun ParentRegistrationScreen(navController: NavController) {
     Column {
         IconButton(
             modifier = Modifier
@@ -479,7 +483,9 @@ fun ParentRegistrationScreen() {
                 .align(CenterHorizontally),
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(Green),
-            onClick = {}
+            onClick = {
+                navController.navigate(Screens.ParentInfoScreen.route)
+            }
         ) {
             Text(
                 text = "Продолжить",

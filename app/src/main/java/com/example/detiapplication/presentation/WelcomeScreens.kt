@@ -13,12 +13,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.detiapplication.R
 import com.example.detiapplication.presentation.theme.Black
 
 //@Preview (showSystemUi = true)
 @Composable
-fun SelectionScreen() {
+fun SelectionScreen(navController: NavController) {
     Column {
         Icon(
             painter = painterResource(id = R.drawable.profile),
@@ -43,7 +44,9 @@ fun SelectionScreen() {
         )
 
         IconButton(
-            onClick = { }
+            onClick = {
+                navController.navigate(route = Screens.ChildrenSignInScreen.route)
+            }
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.select_children),
@@ -58,7 +61,9 @@ fun SelectionScreen() {
         }
 
         IconButton(
-            onClick = { }
+            onClick = {
+                navController.navigate(route = Screens.ParentSignInScreen.route)
+            }
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.select_parent),
