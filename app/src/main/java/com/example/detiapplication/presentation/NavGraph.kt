@@ -4,9 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.detiapplication.presentation.screens.Screens
 
 @Composable
-fun SetupNavGraph(navController: NavHostController) {
+fun SetupNavGraph(navController: NavHostController, viewModel: MainViewModel) {
+
     NavHost(
         navController = navController,
         startDestination = Screens.SelectionScreen.route
@@ -23,45 +25,50 @@ fun SetupNavGraph(navController: NavHostController) {
         composable(
             route = Screens.ChildrenSignInScreen.route
         ) {
-            ChildrenSignInScreen(navController = navController)
+            ChildrenSignInScreen(navController = navController, viewModel = viewModel)
         }
+
         composable(
             route = Screens.ChildrenRegistrationScreen.route
         ) {
-            ChidlrenRegistrationScreen(navController = navController)
+            ChidlrenRegistrationScreen(navController = navController, viewModel = viewModel)
         }
+
         composable(
             route = Screens.ChildrenInfoScreen.route
         ) {
-            ChildrenInfoScreen(navController = navController)
+            ChildrenInfoScreen(navController = navController, viewModel = viewModel)
         }
+
         composable(
             route = Screens.ChildrenQrScreen.route
         ) {
-            ChildrenQrScreen()
+            ChildrenQrScreen(navController = navController, viewModel = viewModel)
         }
-
 
         //Parent
         composable(
             route = Screens.ParentSignInScreen.route
         ) {
-            ParentSignInScreen(navController = navController)
+            ParentSignInScreen(navController = navController, viewModel = viewModel)
         }
+
         composable(
             route = Screens.ParentRegistrationScreen.route
         ) {
-            ParentRegistrationScreen(navController = navController)
+            ParentRegistrationScreen(navController = navController, viewModel = viewModel)
         }
+
         composable(
             route = Screens.ParentInfoScreen.route
         ) {
-            ParentInfoScreen(navController = navController)
+            ParentInfoScreen(navController = navController, viewModel = viewModel)
         }
+
         composable(
             route = Screens.ParentQrScreen.route
         ) {
-            ParentQrScreen()
+            ParentQrScreen(navController = navController, viewModel = viewModel)
         }
     }
 }

@@ -16,11 +16,11 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.detiapplication.R
+import com.example.detiapplication.presentation.screens.Screens
 import com.example.detiapplication.presentation.theme.Black
 import com.example.detiapplication.presentation.theme.Green
 import com.example.detiapplication.presentation.theme.LightBlack
@@ -28,7 +28,7 @@ import com.example.detiapplication.presentation.theme.LightGreen
 
 //@Preview (showSystemUi = true)
 @Composable
-fun ParentSignInScreen(navController: NavController) {
+fun ParentSignInScreen(navController: NavController, viewModel: MainViewModel) {
     Column {
         Text(
             text = "deti",
@@ -144,6 +144,22 @@ fun ParentSignInScreen(navController: NavController) {
             ),
             onClick = {}
         )
+
+        IconButton(
+            onClick = {
+                navController.popBackStack()
+            },
+            modifier = Modifier
+                .padding(start = 15.dp, bottom = 15.dp)
+                .fillMaxHeight()
+                .wrapContentHeight(Bottom)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
+                contentDescription = "back",
+                modifier = Modifier.size(35.dp)
+            )
+        }
     }
 }
 
@@ -235,7 +251,7 @@ fun ParentChangePasswordScreen() {
 
 //@Preview (showSystemUi = true)
 @Composable
-fun ParentInfoScreen(navController: NavController) {
+fun ParentInfoScreen(navController: NavController, viewModel: MainViewModel) {
     Column {
         Text(
             text = "Личные данные",
@@ -308,7 +324,9 @@ fun ParentInfoScreen(navController: NavController) {
         }
 
         IconButton(
-            onClick = { },
+            onClick = {
+                      navController.popBackStack()
+            },
             modifier = Modifier
                 .padding(start = 15.dp, bottom = 15.dp)
                 .fillMaxHeight()
@@ -325,7 +343,7 @@ fun ParentInfoScreen(navController: NavController) {
 
 //@Preview (showSystemUi = true)
 @Composable
-fun ParentQrScreen() {
+fun ParentQrScreen(navController: NavController, viewModel: MainViewModel) {
     Column {
         Text(
             text = "Отсканируйте QR код ребенка",
@@ -390,7 +408,9 @@ fun ParentQrScreen() {
         }
 
         IconButton(
-            onClick = { },
+            onClick = {
+                      navController.popBackStack()
+            },
             modifier = Modifier
                 .padding(start = 15.dp, bottom = 15.dp)
                 .fillMaxHeight()
@@ -407,7 +427,7 @@ fun ParentQrScreen() {
 
 //@Preview (showSystemUi = true)
 @Composable
-fun ParentRegistrationScreen(navController: NavController) {
+fun ParentRegistrationScreen(navController: NavController, viewModel: MainViewModel) {
     Column {
         IconButton(
             modifier = Modifier
@@ -498,7 +518,9 @@ fun ParentRegistrationScreen(navController: NavController) {
         }
 
         IconButton(
-            onClick = { },
+            onClick = {
+                      navController.popBackStack()
+            },
             modifier = Modifier
                 .padding(start = 15.dp, bottom = 15.dp)
                 .fillMaxHeight()

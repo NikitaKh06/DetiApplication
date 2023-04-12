@@ -6,7 +6,7 @@ data class ChildrenLoginRequestModel(
 )
 
 data class ChildrenLoginResponseModel(
-    val token: String
+    var token: String
 )
 
 data class ChildrenRegistrationRequestModel(
@@ -18,5 +18,5 @@ data class ChildrenRegistrationRequestModel(
 )
 
 data class ChildrenRegistrationResponseModel(
-    val token: String
+    var token: String
 )
