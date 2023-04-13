@@ -1,6 +1,6 @@
 package com.example.detiapplication.presentation
 
-import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
@@ -35,9 +36,11 @@ import com.example.detiapplication.presentation.theme.LightGreen
 //@Preview(showSystemUi = true)
 @Composable
 fun ChildrenSignInScreen(navController: NavController, viewModel: MainViewModel) {
+    val context = LocalContext.current
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
     val parentEmail = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
+
     Column {
         Text(
             text = "deti",
@@ -113,12 +116,12 @@ fun ChildrenSignInScreen(navController: NavController, viewModel: MainViewModel)
 
                 viewModel.loginStatus.observe(lifecycleOwner) {
                     if(it == true) {
-                        Log.d("MyLog", "Login succesful")
+                        Toast.makeText(context, "Successful login", Toast.LENGTH_SHORT).show()
                         viewModel.resetLoginStatus()
                     }
                     else if (it == false) {
-                        Log.d("MyLog", "Login error")
-                        viewModel.resetRegStatus()
+                        Toast.makeText(context, "Login error", Toast.LENGTH_SHORT).show()
+                        viewModel.resetLoginStatus()
                     }
                 }
             }
@@ -197,7 +200,6 @@ fun ChildrenSignInScreen(navController: NavController, viewModel: MainViewModel)
 fun ChidlrenRegistrationScreen(navController: NavController, viewModel: MainViewModel) {
     val parentEmail = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
-    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 
     Column {
         IconButton(
@@ -279,27 +281,7 @@ fun ChidlrenRegistrationScreen(navController: NavController, viewModel: MainView
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(Green),
             onClick = {
-                viewModel.registerChildren(
-                    ChildrenRegistrationRequestModel(
-                        parent_email = parentEmail.value,
-                        password = password.value,
-                        first_name = "Nikita",
-                        last_name = "LastNikita",
-                        age = "17"
-                    )
-                )
-                viewModel.registrationStatus.observe(lifecycleOwner) {
-                    if (it == true) {
-                        viewModel.resetRegStatus()
-                        Log.d("MyLog", "Succesful registration")
-                        navController.navigate(Screens.ChildrenInfoScreen.route)
-                    }
-                    else if (it == false){
-                        Log.d("MyLog", "Registration error")
-                        viewModel.resetRegStatus()
-                    }
-                }
-
+                navController.navigate("children_info_screen/${parentEmail.value}/${password.value}")
             }
         ) {
             Text(
@@ -333,7 +315,18 @@ fun ChidlrenRegistrationScreen(navController: NavController, viewModel: MainView
 
 //@Preview (showSystemUi = true)
 @Composable
-fun ChildrenInfoScreen(navController: NavController, viewModel: MainViewModel) {
+fun ChildrenInfoScreen(
+    navController: NavController,
+    viewModel: MainViewModel,
+    parentEmail: String,
+    password: String
+) {
+    val context = LocalContext.current
+    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+    val firstName = remember { mutableStateOf("") }
+    val lastName = remember { mutableStateOf("") }
+    val age = remember { mutableStateOf("") }
+
     Column {
         Text(
             text = "Личные данные",
@@ -358,8 +351,8 @@ fun ChildrenInfoScreen(navController: NavController, viewModel: MainViewModel) {
         )
 
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = firstName.value,
+            onValueChange = { firstName.value = it },
             modifier = Modifier
                 .padding(top = 3.dp, start = 55.dp, end = 55.dp)
                 .fillMaxWidth(),
@@ -376,8 +369,8 @@ fun ChildrenInfoScreen(navController: NavController, viewModel: MainViewModel) {
         )
 
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = lastName.value,
+            onValueChange = { lastName.value = it },
             modifier = Modifier
                 .padding(top = 3.dp, start = 55.dp, end = 55.dp)
                 .fillMaxWidth(),
@@ -394,8 +387,8 @@ fun ChildrenInfoScreen(navController: NavController, viewModel: MainViewModel) {
         )
 
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = age.value,
+            onValueChange = { age.value = it },
             modifier = Modifier
                 .padding(top = 3.dp, start = 55.dp, end = 55.dp)
                 .fillMaxWidth(),
@@ -410,7 +403,28 @@ fun ChildrenInfoScreen(navController: NavController, viewModel: MainViewModel) {
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(Green),
             onClick = {
-                navController.navigate(Screens.ChildrenQrScreen.route)
+
+                viewModel.registerChildren(
+                    ChildrenRegistrationRequestModel(
+                        parent_email = parentEmail,
+                        password = password,
+                        first_name = firstName.value,
+                        last_name = lastName.value,
+                        age = age.value
+                    )
+                )
+
+                viewModel.registrationStatus.observe(lifecycleOwner) {
+                    if (it == true) {
+                        viewModel.resetRegStatus()
+                        Toast.makeText(context, "Successful registration", Toast.LENGTH_SHORT).show()
+                        navController.navigate(Screens.ChildrenQrScreen.route)
+                    }
+                    else if (it == false){
+                        Toast.makeText(context, "Registration error", Toast.LENGTH_SHORT).show()
+                        viewModel.resetRegStatus()
+                    }
+                }
             }
         ) {
             Text(

@@ -6,11 +6,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -18,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import com.example.detiapplication.R
 import com.example.detiapplication.presentation.screens.Screens
@@ -29,6 +34,11 @@ import com.example.detiapplication.presentation.theme.LightGreen
 //@Preview (showSystemUi = true)
 @Composable
 fun ParentSignInScreen(navController: NavController, viewModel: MainViewModel) {
+    val email = remember { mutableStateOf("") }
+    val password = remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+
     Column {
         Text(
             text = "deti",
@@ -60,8 +70,8 @@ fun ParentSignInScreen(navController: NavController, viewModel: MainViewModel) {
         )
 
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = email.value,
+            onValueChange = { email.value = it },
             modifier = Modifier
                 .padding(top = 3.dp, start = 55.dp, end = 55.dp)
                 .fillMaxWidth(),
@@ -78,8 +88,8 @@ fun ParentSignInScreen(navController: NavController, viewModel: MainViewModel) {
         )
 
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = password.value,
+            onValueChange = { password.value = it },
             modifier = Modifier
                 .padding(top = 3.dp, start = 55.dp, end = 55.dp)
                 .fillMaxWidth(),
@@ -165,93 +175,12 @@ fun ParentSignInScreen(navController: NavController, viewModel: MainViewModel) {
 
 //@Preview (showSystemUi = true)
 @Composable
-fun ParentChangePasswordScreen() {
-    Column {
-        Text(
-            text = "Смена пароля",
-            style = TextStyle(
-                fontSize = 33.sp,
-                fontWeight = FontWeight(1000)
-            ),
-            modifier = Modifier
-                .padding(top = 170.dp)
-                .fillMaxWidth()
-                .wrapContentSize(Center),
-            color = Green
-        )
-
-        Text(
-            text = "Электронная почта",
-            style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
-            color = LightBlack,
-            modifier = Modifier
-                .padding(start = 60.dp, top = 50.dp)
-                .fillMaxWidth()
-        )
-
-        OutlinedTextField(
-            value = "",
-            onValueChange = {},
-            modifier = Modifier
-                .padding(top = 3.dp, start = 55.dp, end = 55.dp)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp)
-        )
-
-        Text(
-            text = "Новый пароль",
-            style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
-            color = LightBlack,
-            modifier = Modifier
-                .padding(start = 60.dp, top = 20.dp)
-                .fillMaxWidth()
-        )
-
-        OutlinedTextField(
-            value = "",
-            onValueChange = {},
-            modifier = Modifier
-                .padding(top = 3.dp, start = 55.dp, end = 55.dp)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp)
-        )
-
-        Button(
-            modifier = Modifier
-                .padding(start = 55.dp, end = 55.dp, top = 35.dp)
-                .height(55.dp)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp),
-            colors = ButtonDefaults.buttonColors(Green),
-            onClick = {}
-        ) {
-            Text(
-                text = "Сохранить",
-                style = TextStyle(
-                    fontSize = 19.sp,
-                    fontWeight = FontWeight(700)
-                ),
-                color = Color.White
-            )
-        }
-
-        IconButton(
-            onClick = { },
-            modifier = Modifier
-                .padding(top = 150.dp, start = 15.dp)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
-                contentDescription = "back",
-                modifier = Modifier.size(35.dp)
-            )
-        }
-    }
-}
-
-//@Preview (showSystemUi = true)
-@Composable
 fun ParentInfoScreen(navController: NavController, viewModel: MainViewModel) {
+    val firstName = remember { mutableStateOf("") }
+    val lastName = remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+
     Column {
         Text(
             text = "Личные данные",
@@ -276,8 +205,8 @@ fun ParentInfoScreen(navController: NavController, viewModel: MainViewModel) {
         )
 
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = firstName.value,
+            onValueChange = { firstName.value = it },
             modifier = Modifier
                 .padding(top = 3.dp, start = 55.dp, end = 55.dp)
                 .fillMaxWidth(),
@@ -294,8 +223,8 @@ fun ParentInfoScreen(navController: NavController, viewModel: MainViewModel) {
         )
 
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = lastName.value,
+            onValueChange = { lastName.value = it },
             modifier = Modifier
                 .padding(top = 3.dp, start = 55.dp, end = 55.dp)
                 .fillMaxWidth(),
@@ -428,6 +357,11 @@ fun ParentQrScreen(navController: NavController, viewModel: MainViewModel) {
 //@Preview (showSystemUi = true)
 @Composable
 fun ParentRegistrationScreen(navController: NavController, viewModel: MainViewModel) {
+    val email = remember { mutableStateOf("") }
+    val password = remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+
     Column {
         IconButton(
             modifier = Modifier
@@ -469,8 +403,8 @@ fun ParentRegistrationScreen(navController: NavController, viewModel: MainViewMo
         )
 
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = email.value,
+            onValueChange = { email.value = it },
             modifier = Modifier
                 .padding(top = 3.dp, start = 55.dp, end = 55.dp)
                 .fillMaxWidth(),
@@ -487,8 +421,8 @@ fun ParentRegistrationScreen(navController: NavController, viewModel: MainViewMo
         )
 
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = password.value,
+            onValueChange = { password.value = it },
             modifier = Modifier
                 .padding(top = 3.dp, start = 55.dp, end = 55.dp)
                 .fillMaxWidth(),
@@ -525,6 +459,93 @@ fun ParentRegistrationScreen(navController: NavController, viewModel: MainViewMo
                 .padding(start = 15.dp, bottom = 15.dp)
                 .fillMaxHeight()
                 .wrapContentHeight(Bottom)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
+                contentDescription = "back",
+                modifier = Modifier.size(35.dp)
+            )
+        }
+    }
+}
+
+
+//@Preview (showSystemUi = true)
+@Composable
+fun ParentChangePasswordScreen() {
+    Column {
+        Text(
+            text = "Смена пароля",
+            style = TextStyle(
+                fontSize = 33.sp,
+                fontWeight = FontWeight(1000)
+            ),
+            modifier = Modifier
+                .padding(top = 170.dp)
+                .fillMaxWidth()
+                .wrapContentSize(Center),
+            color = Green
+        )
+
+        Text(
+            text = "Электронная почта",
+            style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
+            color = LightBlack,
+            modifier = Modifier
+                .padding(start = 60.dp, top = 50.dp)
+                .fillMaxWidth()
+        )
+
+        OutlinedTextField(
+            value = "",
+            onValueChange = {},
+            modifier = Modifier
+                .padding(top = 3.dp, start = 55.dp, end = 55.dp)
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(15.dp)
+        )
+
+        Text(
+            text = "Новый пароль",
+            style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
+            color = LightBlack,
+            modifier = Modifier
+                .padding(start = 60.dp, top = 20.dp)
+                .fillMaxWidth()
+        )
+
+        OutlinedTextField(
+            value = "",
+            onValueChange = {},
+            modifier = Modifier
+                .padding(top = 3.dp, start = 55.dp, end = 55.dp)
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(15.dp)
+        )
+
+        Button(
+            modifier = Modifier
+                .padding(start = 55.dp, end = 55.dp, top = 35.dp)
+                .height(55.dp)
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(15.dp),
+            colors = ButtonDefaults.buttonColors(Green),
+            onClick = {}
+        ) {
+            Text(
+                text = "Сохранить",
+                style = TextStyle(
+                    fontSize = 19.sp,
+                    fontWeight = FontWeight(700)
+                ),
+                color = Color.White
+            )
+        }
+
+        IconButton(
+            onClick = { },
+            modifier = Modifier
+                .padding(top = 150.dp, start = 15.dp)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),

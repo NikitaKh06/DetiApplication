@@ -1,9 +1,12 @@
 package com.example.detiapplication.presentation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.detiapplication.presentation.screens.Screens
 
 @Composable
@@ -35,9 +38,23 @@ fun SetupNavGraph(navController: NavHostController, viewModel: MainViewModel) {
         }
 
         composable(
-            route = Screens.ChildrenInfoScreen.route
+            route = Screens.ChildrenInfoScreen.route,
+            arguments = listOf(
+                navArgument(name = "parent_email") {
+                    type = NavType.StringType
+                },
+                navArgument(name = "password") {
+                    type = NavType.StringType
+                }
+            )
         ) {
-            ChildrenInfoScreen(navController = navController, viewModel = viewModel)
+            ChildrenInfoScreen(
+                navController = navController,
+                viewModel = viewModel,
+                parentEmail = it.arguments?.getString("parent_email").toString(),
+                password = it.arguments?.getString("password").toString()
+            )
+            Log.d("MyLog", it.arguments?.getString("parent_email").toString())
         }
 
         composable(
