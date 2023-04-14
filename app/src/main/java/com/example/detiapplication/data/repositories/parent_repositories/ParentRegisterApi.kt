@@ -12,10 +12,10 @@ import retrofit2.http.POST
 
 interface ParentRegisterApi {
     @POST("parent/register")
-    fun registerParent(@Body parent: ParentRegistrationRequestModel) : Response<ParentRegistrationResponseModel>
+    suspend fun registerParent(@Body parent: ParentRegistrationRequestModel) : Response<ParentRegistrationResponseModel>
 
     @POST("parent/login")
-    fun loginParent(@Body parent: ParentLoginRequestModel) : Response<ParentLoginResponseModel>
+    suspend fun loginParent(@Body parent: ParentLoginRequestModel) : Response<ParentLoginResponseModel>
 
     companion object {
 

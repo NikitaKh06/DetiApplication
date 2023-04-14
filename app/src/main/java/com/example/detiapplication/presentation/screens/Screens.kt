@@ -5,7 +5,7 @@ sealed class Screens(val route: String) {
 
     object ParentSignInScreen: Screens(route = "parent_sign_in_screen")
 
-    object ParentInfoScreen: Screens(route = "parent_info_screen")
+    object ParentInfoScreen: Screens(route = "parent_info_screen/{email}/{password}")
     object ParentQrScreen: Screens(route = "parent_qr_screen")
     object ParentRegistrationScreen: Screens(route = "parent_registration_screen")
     object ParentChangePasswordScreen: Screens(route = "parent_change_password_screen")

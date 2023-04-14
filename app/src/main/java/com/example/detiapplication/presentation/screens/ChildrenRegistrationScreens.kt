@@ -148,9 +148,8 @@ fun ChildrenSignInScreen(navController: NavController, viewModel: MainViewModel)
             colors = ButtonDefaults.buttonColors(Color.White),
             onClick = {
                 viewModel.resetLoginStatus()
-                navController.navigate(Screens.ChildrenRegistrationScreen.route)
+                navController.navigate(Screens.ParentRegistrationScreen.route)
             },
-
             ) {
             Text(
                 text = "Регистрация",

@@ -1,5 +1,6 @@
 package com.example.detiapplication.presentation
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,6 +26,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import com.example.detiapplication.R
+import com.example.detiapplication.domain.models.parent_models.ParentLoginRequestModel
+import com.example.detiapplication.domain.models.parent_models.ParentRegistrationRequestModel
 import com.example.detiapplication.presentation.screens.Screens
 import com.example.detiapplication.presentation.theme.Black
 import com.example.detiapplication.presentation.theme.Green
@@ -103,7 +106,26 @@ fun ParentSignInScreen(navController: NavController, viewModel: MainViewModel) {
                 .fillMaxWidth(),
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(Green),
-            onClick = {}
+            onClick = {
+                viewModel.loginParent(
+                    ParentLoginRequestModel(
+                        email = email.value,
+                        password = password.value
+                    )
+                )
+
+                viewModel.loginStatusParent.observe(lifecycleOwner) {
+                    if(it == true) {
+                        viewModel.resetLoginStatusParent()
+                        Toast.makeText(context, "Successful login", Toast.LENGTH_SHORT).show()
+                        navController.navigate(Screens.ParentQrScreen.route)
+                    }
+                    else if (it == false){
+                        viewModel.resetLoginStatusParent()
+                        Toast.makeText(context, "Login error", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         ) {
             Text(
                 text = "Продолжить",
@@ -175,7 +197,7 @@ fun ParentSignInScreen(navController: NavController, viewModel: MainViewModel) {
 
 //@Preview (showSystemUi = true)
 @Composable
-fun ParentInfoScreen(navController: NavController, viewModel: MainViewModel) {
+fun ParentInfoScreen(navController: NavController, viewModel: MainViewModel, email: String, password: String) {
     val firstName = remember { mutableStateOf("") }
     val lastName = remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -239,7 +261,27 @@ fun ParentInfoScreen(navController: NavController, viewModel: MainViewModel) {
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(Green),
             onClick = {
-                navController.navigate(Screens.ParentQrScreen.route)
+                viewModel.registerParent(
+                    ParentRegistrationRequestModel(
+                        email = email,
+                        password = password,
+                        first_name = firstName.value,
+                        last_name = lastName.value
+                    )
+                )
+
+                viewModel.registrationStatusParent.observe(lifecycleOwner) {
+                    if(it == true) {
+                        viewModel.resetRegStatusParent()
+                        Toast.makeText(context, "Successful registration", Toast.LENGTH_SHORT).show()
+                        navController.navigate(Screens.ParentQrScreen.route)
+                    }
+                    else if (it == false){
+                        viewModel.resetRegStatusParent()
+                        Toast.makeText(context, "Registration error", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
             }
         ) {
             Text(
@@ -359,8 +401,6 @@ fun ParentQrScreen(navController: NavController, viewModel: MainViewModel) {
 fun ParentRegistrationScreen(navController: NavController, viewModel: MainViewModel) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
-    val context = LocalContext.current
-    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 
     Column {
         IconButton(
@@ -438,7 +478,7 @@ fun ParentRegistrationScreen(navController: NavController, viewModel: MainViewMo
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(Green),
             onClick = {
-                navController.navigate(Screens.ParentInfoScreen.route)
+                navController.navigate(route = "parent_info_screen/${email.value}/${password.value}")
             }
         ) {
             Text(
