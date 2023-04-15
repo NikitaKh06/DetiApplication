@@ -1,6 +1,6 @@
 package com.example.detiapplication.presentation
 
-import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,67 +13,76 @@ import com.example.detiapplication.domain.models.parent_models.ParentRegistratio
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
-    var registrationStatus = MutableLiveData<Boolean?>(null)
-    var loginStatus = MutableLiveData<Boolean?>(null)
-    var registrationStatusParent = MutableLiveData<Boolean?>(null)
-    var loginStatusParent = MutableLiveData<Boolean?>(null)
+    var childrenRegistrationStatus = MutableLiveData<Boolean?>(null)
+    var childrenLoginStatus = MutableLiveData<Boolean?>(null)
+    var parentRegistrationStatus = MutableLiveData<Boolean?>(null)
+    var parentLoginStatus = MutableLiveData<Boolean?>(null)
+    var loadingStatus = mutableStateOf(false)
 
     //Children
     fun registerChildren(model: ChildrenRegistrationRequestModel) {
         val request = ChildrenRegisterApi.create()
+        loadingStatus.value = true
         viewModelScope.launch {
             try {
                 val response = request.registerChildren(model)
-                registrationStatus.value = response.body()?.token?.isNotEmpty() == true
+                childrenRegistrationStatus.value = response.body()?.token?.isNotEmpty() == true
+                loadingStatus.value = false
             } catch (_: Exception) {  }
         }
 
     }
 
     fun resetRegStatus() {
-        registrationStatus.value = null
+        childrenRegistrationStatus.value = null
     }
 
     fun loginChildren(model: ChildrenLoginRequestModel) {
         val request = ChildrenRegisterApi.create()
+        loadingStatus.value = true
         viewModelScope.launch {
             try {
                 val response = request.loginChildren(model)
-                loginStatus.value = response.body()?.token?.isNotEmpty() == true
+                childrenLoginStatus.value = response.body()?.token?.isNotEmpty() == true
+                loadingStatus.value = false
             } catch (_: Exception) {  }
         }
     }
 
     fun resetLoginStatus() {
-        loginStatus.value = null
+        childrenLoginStatus.value = null
     }
 
     //Parent
     fun registerParent(model: ParentRegistrationRequestModel) {
         val request = ParentRegisterApi.create()
+        loadingStatus.value = true
         viewModelScope.launch {
             try {
                 val response = request.registerParent(model)
-                registrationStatusParent.value = response.body()?.token?.isNotEmpty() == true
+                parentRegistrationStatus.value = response.body()?.token?.isNotEmpty() == true
+                loadingStatus.value = false
             } catch (_: Exception) {  }
         }
     }
 
     fun resetRegStatusParent() {
-        registrationStatusParent.value = null
+        parentRegistrationStatus.value = null
     }
 
     fun loginParent(model: ParentLoginRequestModel) {
         val request = ParentRegisterApi.create()
+        loadingStatus.value = true
         viewModelScope.launch {
             try {
                 val response = request.loginParent(model)
-                loginStatusParent.value = response.body()?.token?.isNotEmpty() == true
+                parentLoginStatus.value = response.body()?.token?.isNotEmpty() == true
+                loadingStatus.value = false
             } catch (_: java.lang.Exception) {  }
         }
     }
 
     fun resetLoginStatusParent() {
-        loginStatusParent.value = null
+        parentLoginStatus.value = null
     }
 }

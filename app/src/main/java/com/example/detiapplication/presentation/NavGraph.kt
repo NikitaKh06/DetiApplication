@@ -6,7 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.detiapplication.presentation.screens.Screens
+import com.example.detiapplication.presentation.screens.*
 
 @Composable
 fun SetupNavGraph(navController: NavHostController, viewModel: MainViewModel) {
@@ -33,7 +33,7 @@ fun SetupNavGraph(navController: NavHostController, viewModel: MainViewModel) {
         composable(
             route = Screens.ChildrenRegistrationScreen.route
         ) {
-            ChidlrenRegistrationScreen(navController = navController, viewModel = viewModel)
+            ChidlrenRegistrationScreen(navController = navController)
         }
 
         composable(
@@ -58,7 +58,7 @@ fun SetupNavGraph(navController: NavHostController, viewModel: MainViewModel) {
         composable(
             route = Screens.ChildrenQrScreen.route
         ) {
-            ChildrenQrScreen(navController = navController, viewModel = viewModel)
+            ChildrenQrScreen(navController = navController)
         }
 
         //Parent
@@ -71,7 +71,7 @@ fun SetupNavGraph(navController: NavHostController, viewModel: MainViewModel) {
         composable(
             route = Screens.ParentRegistrationScreen.route
         ) {
-            ParentRegistrationScreen(navController = navController, viewModel = viewModel)
+            ParentRegistrationScreen(navController = navController)
         }
 
         composable(
@@ -96,7 +96,7 @@ fun SetupNavGraph(navController: NavHostController, viewModel: MainViewModel) {
         composable(
             route = Screens.ParentQrScreen.route
         ) {
-            ParentQrScreen(navController = navController, viewModel = viewModel)
+            ParentQrScreen(navController = navController)
         }
     }
 }

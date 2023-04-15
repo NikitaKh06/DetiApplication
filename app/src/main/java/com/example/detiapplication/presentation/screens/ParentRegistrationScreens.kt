@@ -9,9 +9,11 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -28,11 +30,9 @@ import androidx.navigation.NavController
 import com.example.detiapplication.R
 import com.example.detiapplication.domain.models.parent_models.ParentLoginRequestModel
 import com.example.detiapplication.domain.models.parent_models.ParentRegistrationRequestModel
+import com.example.detiapplication.presentation.screens.CircularProgressBar
 import com.example.detiapplication.presentation.screens.Screens
-import com.example.detiapplication.presentation.theme.Black
-import com.example.detiapplication.presentation.theme.Green
-import com.example.detiapplication.presentation.theme.LightBlack
-import com.example.detiapplication.presentation.theme.LightGreen
+import com.example.detiapplication.presentation.theme.*
 
 //@Preview (showSystemUi = true)
 @Composable
@@ -41,6 +41,8 @@ fun ParentSignInScreen(navController: NavController, viewModel: MainViewModel) {
     val password = remember { mutableStateOf("") }
     val context = LocalContext.current
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+    val wrongEmail = remember { mutableStateOf(false) }
+    val wrongPassword = remember { mutableStateOf(false) }
 
     Column {
         Text(
@@ -58,45 +60,53 @@ fun ParentSignInScreen(navController: NavController, viewModel: MainViewModel) {
             style = TextStyle(fontSize = 35.sp, fontWeight = FontWeight(1000)),
             color = Black,
             modifier = Modifier
-                .padding(top = 60.dp)
+                .padding(top = 83.dp)
                 .fillMaxWidth()
                 .wrapContentSize(Center)
         )
 
-        Text(
-            text = "Электронная почта",
-            style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
-            color = LightBlack,
-            modifier = Modifier
-                .padding(start = 60.dp, top = 50.dp)
-                .fillMaxWidth()
-        )
-
         OutlinedTextField(
             value = email.value,
-            onValueChange = { email.value = it },
+            onValueChange = {
+                email.value = it
+                wrongEmail.value = email.value.isEmpty()
+            },
+            label = {
+                Text(
+                    text = "Электронная почта",
+                    style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
+                    color = if(wrongPassword.value) LightRed else LightBlack
+                )
+            },
             modifier = Modifier
-                .padding(top = 3.dp, start = 55.dp, end = 55.dp)
+                .padding(top = 40.dp, start = 55.dp, end = 55.dp)
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp)
-        )
-
-        Text(
-            text = "Пароль",
-            style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
-            color = LightBlack,
-            modifier = Modifier
-                .padding(start = 60.dp, top = 20.dp)
-                .fillMaxWidth()
+            shape = RoundedCornerShape(15.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                unfocusedBorderColor = if(wrongEmail.value) LightRed else LightBlack
+            )
         )
 
         OutlinedTextField(
             value = password.value,
-            onValueChange = { password.value = it },
+            onValueChange = {
+                password.value = it
+                wrongPassword.value = password.value.isEmpty()
+            },
+            label = {
+                Text(
+                    text = "Пароль",
+                    style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
+                    color = if(wrongPassword.value) LightRed else LightBlack
+                )
+            },
             modifier = Modifier
                 .padding(top = 3.dp, start = 55.dp, end = 55.dp)
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp)
+            shape = RoundedCornerShape(15.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                unfocusedBorderColor = if(wrongPassword.value) LightRed else LightBlack
+            )
         )
 
         Button(
@@ -107,22 +117,26 @@ fun ParentSignInScreen(navController: NavController, viewModel: MainViewModel) {
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(Green),
             onClick = {
-                viewModel.loginParent(
-                    ParentLoginRequestModel(
-                        email = email.value,
-                        password = password.value
-                    )
-                )
+                wrongEmail.value = email.value.isEmpty()
+                wrongPassword.value = password.value.isEmpty()
 
-                viewModel.loginStatusParent.observe(lifecycleOwner) {
-                    if(it == true) {
-                        viewModel.resetLoginStatusParent()
-                        Toast.makeText(context, "Successful login", Toast.LENGTH_SHORT).show()
-                        navController.navigate(Screens.ParentQrScreen.route)
-                    }
-                    else if (it == false){
-                        viewModel.resetLoginStatusParent()
-                        Toast.makeText(context, "Login error", Toast.LENGTH_SHORT).show()
+                if(email.value.isNotEmpty() && password.value.isNotEmpty()) {
+                    viewModel.loginParent(
+                        ParentLoginRequestModel(
+                            email = email.value,
+                            password = password.value
+                        )
+                    )
+
+                    viewModel.parentLoginStatus.observe(lifecycleOwner) {
+                        if(it == true) {
+                            viewModel.resetLoginStatusParent()
+                            Toast.makeText(context, "Successful login", Toast.LENGTH_SHORT).show()
+                        }
+                        else if (it == false){
+                            viewModel.resetLoginStatusParent()
+                            Toast.makeText(context, "Login error", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
@@ -141,7 +155,7 @@ fun ParentSignInScreen(navController: NavController, viewModel: MainViewModel) {
 
         Button(
             modifier = Modifier
-                .padding(start = 55.dp, end = 55.dp, top = 25.dp)
+                .padding(start = 55.dp, end = 55.dp, top = 20.dp)
                 .height(55.dp)
                 .fillMaxWidth(),
             shape = RoundedCornerShape(15.dp),
@@ -150,7 +164,6 @@ fun ParentSignInScreen(navController: NavController, viewModel: MainViewModel) {
             onClick = {
                 navController.navigate(route = Screens.ParentRegistrationScreen.route)
             },
-
             ) {
             Text(
                 text = "Регистрация",
@@ -182,9 +195,8 @@ fun ParentSignInScreen(navController: NavController, viewModel: MainViewModel) {
                 navController.popBackStack()
             },
             modifier = Modifier
-                .padding(start = 15.dp, bottom = 15.dp)
-                .fillMaxHeight()
-                .wrapContentHeight(Bottom)
+                .padding(start = 15.dp, top = 20.dp)
+                .wrapContentHeight(CenterVertically)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
@@ -192,6 +204,8 @@ fun ParentSignInScreen(navController: NavController, viewModel: MainViewModel) {
                 modifier = Modifier.size(35.dp)
             )
         }
+
+        CircularProgressBar(isLoading = viewModel.loadingStatus.value)
     }
 }
 
@@ -202,6 +216,8 @@ fun ParentInfoScreen(navController: NavController, viewModel: MainViewModel, ema
     val lastName = remember { mutableStateOf("") }
     val context = LocalContext.current
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+    val wrongFirstName = remember { mutableStateOf(false) }
+    val wrongSecondName = remember { mutableStateOf(false) }
 
     Column {
         Text(
@@ -211,46 +227,48 @@ fun ParentInfoScreen(navController: NavController, viewModel: MainViewModel, ema
                 fontWeight = FontWeight(1000)
             ),
             modifier = Modifier
-                .padding(top = 150.dp)
+                .padding(top = 170.dp)
                 .fillMaxWidth()
                 .wrapContentWidth(CenterHorizontally),
             color = Black
-        )
-
-        Text(
-            text = "Имя",
-            style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
-            color = LightBlack,
-            modifier = Modifier
-                .padding(start = 60.dp, top = 50.dp)
-                .fillMaxWidth()
         )
 
         OutlinedTextField(
             value = firstName.value,
             onValueChange = { firstName.value = it },
             modifier = Modifier
-                .padding(top = 3.dp, start = 55.dp, end = 55.dp)
+                .padding(top = 50.dp, start = 55.dp, end = 55.dp)
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp)
-        )
-
-        Text(
-            text = "Фамилия",
-            style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
-            color = LightBlack,
-            modifier = Modifier
-                .padding(start = 60.dp, top = 20.dp)
-                .fillMaxWidth()
+            shape = RoundedCornerShape(15.dp),
+            label = {
+                Text(
+                    text = "Имя",
+                    style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
+                    color = if(wrongFirstName.value) LightRed else LightBlack
+                )
+            },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                unfocusedBorderColor = if(wrongFirstName.value) LightRed else LightBlack
+            )
         )
 
         OutlinedTextField(
             value = lastName.value,
             onValueChange = { lastName.value = it },
             modifier = Modifier
-                .padding(top = 3.dp, start = 55.dp, end = 55.dp)
+                .padding(top = 10.dp, start = 55.dp, end = 55.dp)
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp)
+            shape = RoundedCornerShape(15.dp),
+            label = {
+                Text(
+                    text = "Фамилия",
+                    style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
+                    color = if(wrongSecondName.value) LightRed else LightBlack
+                )
+            },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                unfocusedBorderColor = if(wrongSecondName.value) LightRed else LightBlack
+            )
         )
 
         Button(
@@ -261,27 +279,31 @@ fun ParentInfoScreen(navController: NavController, viewModel: MainViewModel, ema
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(Green),
             onClick = {
-                viewModel.registerParent(
-                    ParentRegistrationRequestModel(
-                        email = email,
-                        password = password,
-                        first_name = firstName.value,
-                        last_name = lastName.value
-                    )
-                )
+                wrongFirstName.value = firstName.value.isEmpty()
+                wrongSecondName.value = lastName.value.isEmpty()
 
-                viewModel.registrationStatusParent.observe(lifecycleOwner) {
-                    if(it == true) {
-                        viewModel.resetRegStatusParent()
-                        Toast.makeText(context, "Successful registration", Toast.LENGTH_SHORT).show()
-                        navController.navigate(Screens.ParentQrScreen.route)
-                    }
-                    else if (it == false){
-                        viewModel.resetRegStatusParent()
-                        Toast.makeText(context, "Registration error", Toast.LENGTH_SHORT).show()
+                if(firstName.value.isNotEmpty() && lastName.value.isNotEmpty()) {
+                    viewModel.registerParent(
+                        ParentRegistrationRequestModel(
+                            email = email,
+                            password = password,
+                            first_name = firstName.value,
+                            last_name = lastName.value
+                        )
+                    )
+
+                    viewModel.parentRegistrationStatus.observe(lifecycleOwner) {
+                        if(it == true) {
+                            viewModel.resetRegStatusParent()
+                            Toast.makeText(context, "Successful registration", Toast.LENGTH_SHORT).show()
+                            navController.navigate(Screens.ParentQrScreen.route)
+                        }
+                        else if (it == false){
+                            viewModel.resetRegStatusParent()
+                            Toast.makeText(context, "Registration error", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
-
             }
         ) {
             Text(
@@ -299,9 +321,8 @@ fun ParentInfoScreen(navController: NavController, viewModel: MainViewModel, ema
                       navController.popBackStack()
             },
             modifier = Modifier
-                .padding(start = 15.dp, bottom = 15.dp)
-                .fillMaxHeight()
-                .wrapContentHeight(Bottom)
+                .padding(start = 15.dp, top = 90.dp)
+                .wrapContentHeight(Alignment.Top)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
@@ -309,12 +330,14 @@ fun ParentInfoScreen(navController: NavController, viewModel: MainViewModel, ema
                 modifier = Modifier.size(35.dp)
             )
         }
+
+        CircularProgressBar(isLoading = viewModel.loadingStatus.value)
     }
 }
 
 //@Preview (showSystemUi = true)
 @Composable
-fun ParentQrScreen(navController: NavController, viewModel: MainViewModel) {
+fun ParentQrScreen(navController: NavController) {
     Column {
         Text(
             text = "Отсканируйте QR код ребенка",
@@ -398,9 +421,11 @@ fun ParentQrScreen(navController: NavController, viewModel: MainViewModel) {
 
 //@Preview (showSystemUi = true)
 @Composable
-fun ParentRegistrationScreen(navController: NavController, viewModel: MainViewModel) {
+fun ParentRegistrationScreen(navController: NavController) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
+    val wrongEmail = remember { mutableStateOf(false) }
+    val wrongPassword = remember { mutableStateOf(false) }
 
     Column {
         IconButton(
@@ -433,31 +458,23 @@ fun ParentRegistrationScreen(navController: NavController, viewModel: MainViewMo
             color = Black
         )
 
-        Text(
-            text = "Электронная почта",
-            style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
-            color = LightBlack,
-            modifier = Modifier
-                .padding(start = 60.dp, top = 30.dp)
-                .fillMaxWidth()
-        )
-
         OutlinedTextField(
             value = email.value,
             onValueChange = { email.value = it },
             modifier = Modifier
-                .padding(top = 3.dp, start = 55.dp, end = 55.dp)
+                .padding(top = 40.dp, start = 55.dp, end = 55.dp)
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp)
-        )
-
-        Text(
-            text = "Пароль",
-            style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
-            color = LightBlack,
-            modifier = Modifier
-                .padding(start = 60.dp, top = 15.dp)
-                .fillMaxWidth()
+            shape = RoundedCornerShape(15.dp),
+            label = {
+                Text(
+                    text = "Электронная почта",
+                    style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
+                    color = if(wrongEmail.value) LightRed else LightBlack
+                )
+            },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                unfocusedBorderColor = if(wrongEmail.value) LightRed else LightBlack
+            )
         )
 
         OutlinedTextField(
@@ -466,7 +483,17 @@ fun ParentRegistrationScreen(navController: NavController, viewModel: MainViewMo
             modifier = Modifier
                 .padding(top = 3.dp, start = 55.dp, end = 55.dp)
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp)
+            shape = RoundedCornerShape(15.dp),
+            label = {
+                Text(
+                    text = "Пароль",
+                    style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
+                    color = if(wrongPassword.value) LightRed else LightBlack
+                )
+            },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                unfocusedBorderColor = if(wrongPassword.value) LightRed else LightBlack
+            )
         )
 
         Button(
@@ -478,7 +505,11 @@ fun ParentRegistrationScreen(navController: NavController, viewModel: MainViewMo
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(Green),
             onClick = {
-                navController.navigate(route = "parent_info_screen/${email.value}/${password.value}")
+                wrongEmail.value = email.value.isEmpty()
+                wrongPassword.value = password.value.isEmpty()
+                if(email.value.isNotEmpty() && password.value.isNotEmpty()) {
+                    navController.navigate(route = "parent_info_screen/${email.value}/${password.value}")
+                }
             }
         ) {
             Text(
@@ -496,9 +527,8 @@ fun ParentRegistrationScreen(navController: NavController, viewModel: MainViewMo
                       navController.popBackStack()
             },
             modifier = Modifier
-                .padding(start = 15.dp, bottom = 15.dp)
-                .fillMaxHeight()
-                .wrapContentHeight(Bottom)
+                .padding(start = 15.dp, top = 40.dp)
+                .wrapContentHeight(CenterVertically)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),

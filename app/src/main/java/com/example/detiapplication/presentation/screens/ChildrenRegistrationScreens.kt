@@ -1,4 +1,4 @@
-package com.example.detiapplication.presentation
+package com.example.detiapplication.presentation.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -27,19 +28,35 @@ import androidx.navigation.NavController
 import com.example.detiapplication.R
 import com.example.detiapplication.domain.models.children_models.ChildrenLoginRequestModel
 import com.example.detiapplication.domain.models.children_models.ChildrenRegistrationRequestModel
-import com.example.detiapplication.presentation.screens.Screens
-import com.example.detiapplication.presentation.theme.Black
-import com.example.detiapplication.presentation.theme.Green
-import com.example.detiapplication.presentation.theme.LightBlack
-import com.example.detiapplication.presentation.theme.LightGreen
+import com.example.detiapplication.presentation.MainViewModel
+import com.example.detiapplication.presentation.theme.*
 
-//@Preview(showSystemUi = true)
+@Composable
+fun CircularProgressBar(isLoading: Boolean) {
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .wrapContentHeight(CenterVertically)
+    ) {
+        if(isLoading) {
+            CircularProgressIndicator(
+                color = Color.Gray,
+                modifier = Modifier.size(25.dp)
+            )
+        }
+    }
+}
+
 @Composable
 fun ChildrenSignInScreen(navController: NavController, viewModel: MainViewModel) {
     val context = LocalContext.current
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
     val parentEmail = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
+    val wrongEmail = remember { mutableStateOf(false) }
+    val wrongPassword = remember { mutableStateOf(false) }
 
     Column {
         Text(
@@ -57,45 +74,53 @@ fun ChildrenSignInScreen(navController: NavController, viewModel: MainViewModel)
             style = TextStyle(fontSize = 35.sp, fontWeight = FontWeight(1000)),
             color = Black,
             modifier = Modifier
-                .padding(top = 60.dp)
+                .padding(top = 50.dp)
                 .fillMaxWidth()
                 .wrapContentSize(Alignment.Center)
         )
 
-        Text(
-            text = "Почта родителя",
-            style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
-            color = LightBlack,
-            modifier = Modifier
-                .padding(start = 60.dp, top = 50.dp)
-                .fillMaxWidth()
-        )
-
         OutlinedTextField(
             value = parentEmail.value,
-            onValueChange = { parentEmail.value = it },
+            onValueChange = {
+                parentEmail.value = it
+                wrongEmail.value = parentEmail.value.isEmpty()
+            },
             modifier = Modifier
-                .padding(top = 3.dp, start = 55.dp, end = 55.dp)
+                .padding(top = 50.dp, start = 55.dp, end = 55.dp)
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp)
-        )
-
-        Text(
-            text = "Пароль",
-            style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
-            color = LightBlack,
-            modifier = Modifier
-                .padding(start = 60.dp, top = 20.dp)
-                .fillMaxWidth()
+            shape = RoundedCornerShape(15.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                unfocusedBorderColor = if(wrongEmail.value) LightRed else LightBlack
+            ),
+            label = {
+                Text(
+                    text = "Почта родителя",
+                    style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
+                    color = if(wrongPassword.value) LightRed else LightBlack
+                )
+            }
         )
 
         OutlinedTextField(
             value = password.value,
-            onValueChange = { password.value = it },
+            onValueChange = {
+                password.value = it
+                wrongPassword.value = password.value.isEmpty()
+            },
             modifier = Modifier
                 .padding(top = 3.dp, start = 55.dp, end = 55.dp)
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp)
+            shape = RoundedCornerShape(15.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                unfocusedBorderColor = if(wrongPassword.value) LightRed else LightBlack
+            ),
+            label = {
+                Text(
+                    text = "Пароль",
+                    style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
+                    color = if(wrongPassword.value) LightRed else LightBlack
+                )
+            }
         )
 
         Button(
@@ -106,24 +131,29 @@ fun ChildrenSignInScreen(navController: NavController, viewModel: MainViewModel)
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(Green),
             onClick = {
+                wrongEmail.value = parentEmail.value.isEmpty()
+                wrongPassword.value = password.value.isEmpty()
 
-                viewModel.loginChildren(
-                    ChildrenLoginRequestModel(
-                        parent_email = parentEmail.value,
-                        password = password.value
+                if(parentEmail.value.isNotEmpty() && password.value.isNotEmpty()) {
+                    viewModel.loginChildren(
+                        ChildrenLoginRequestModel(
+                            parent_email = parentEmail.value,
+                            password = password.value
+                        )
                     )
-                )
 
-                viewModel.loginStatus.observe(lifecycleOwner) {
-                    if(it == true) {
-                        Toast.makeText(context, "Successful login", Toast.LENGTH_SHORT).show()
-                        viewModel.resetLoginStatus()
-                    }
-                    else if (it == false) {
-                        Toast.makeText(context, "Login error", Toast.LENGTH_SHORT).show()
-                        viewModel.resetLoginStatus()
+                    viewModel.childrenLoginStatus.observe(lifecycleOwner) {
+                        if(it == true) {
+                            Toast.makeText(context, "Successful login", Toast.LENGTH_SHORT).show()
+                            viewModel.resetLoginStatus()
+                        }
+                        else if (it == false) {
+                            Toast.makeText(context, "Login error", Toast.LENGTH_SHORT).show()
+                            viewModel.resetLoginStatus()
+                        }
                     }
                 }
+
             }
         ) {
             Text(
@@ -148,7 +178,7 @@ fun ChildrenSignInScreen(navController: NavController, viewModel: MainViewModel)
             colors = ButtonDefaults.buttonColors(Color.White),
             onClick = {
                 viewModel.resetLoginStatus()
-                navController.navigate(Screens.ParentRegistrationScreen.route)
+                navController.navigate(Screens.ChildrenRegistrationScreen.route)
             },
             ) {
             Text(
@@ -181,9 +211,8 @@ fun ChildrenSignInScreen(navController: NavController, viewModel: MainViewModel)
                 navController.popBackStack()
             },
             modifier = Modifier
-                .padding(start = 15.dp, bottom = 15.dp)
-                .fillMaxHeight()
-                .wrapContentHeight(Alignment.Bottom)
+                .padding(start = 15.dp, top = 20.dp)
+                .wrapContentHeight(CenterVertically)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
@@ -191,14 +220,18 @@ fun ChildrenSignInScreen(navController: NavController, viewModel: MainViewModel)
                 modifier = Modifier.size(35.dp)
             )
         }
+
+        CircularProgressBar(isLoading = viewModel.loadingStatus.value)
     }
 }
 
 //@Preview (showSystemUi = true)
 @Composable
-fun ChidlrenRegistrationScreen(navController: NavController, viewModel: MainViewModel) {
+fun ChidlrenRegistrationScreen(navController: NavController) {
     val parentEmail = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
+    val wrongEmail = remember { mutableStateOf(false) }
+    val wrongPassword = remember { mutableStateOf(false) }
 
     Column {
         IconButton(
@@ -233,33 +266,25 @@ fun ChidlrenRegistrationScreen(navController: NavController, viewModel: MainView
             color = Black
         )
 
-        Text(
-            text = "Почта родителя",
-            style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
-            color = LightBlack,
-            modifier = Modifier
-                .padding(start = 60.dp, top = 30.dp)
-                .fillMaxWidth()
-        )
-
         OutlinedTextField(
             value = parentEmail.value,
             onValueChange = {
                             parentEmail.value = it
             },
             modifier = Modifier
-                .padding(top = 3.dp, start = 55.dp, end = 55.dp)
+                .padding(top = 40.dp, start = 55.dp, end = 55.dp)
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp)
-        )
-
-        Text(
-            text = "Пароль",
-            style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
-            color = LightBlack,
-            modifier = Modifier
-                .padding(start = 60.dp, top = 15.dp)
-                .fillMaxWidth()
+            shape = RoundedCornerShape(15.dp),
+            label = {
+                Text(
+                    text = "Почта родителя",
+                    style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
+                    color = if(wrongPassword.value) LightRed else LightBlack
+                )
+            },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                unfocusedBorderColor = if(wrongEmail.value) LightRed else LightBlack
+            )
         )
 
         OutlinedTextField(
@@ -268,19 +293,33 @@ fun ChidlrenRegistrationScreen(navController: NavController, viewModel: MainView
             modifier = Modifier
                 .padding(top = 3.dp, start = 55.dp, end = 55.dp)
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp)
+            shape = RoundedCornerShape(15.dp),
+            label = {
+                Text(
+                    text = "Пароль",
+                    style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
+                    color = if(wrongPassword.value) LightRed else LightBlack
+                )
+            },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                unfocusedBorderColor = if(wrongPassword.value) LightRed else LightBlack
+            )
         )
         
         Button(
             modifier = Modifier
-                .padding(top = 50.dp, start = 55.dp, end = 55.dp)
+                .padding(top = 43.dp, start = 55.dp, end = 55.dp)
                 .height(55.dp)
                 .fillMaxWidth()
                 .align(CenterHorizontally),
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(Green),
             onClick = {
-                navController.navigate("children_info_screen/${parentEmail.value}/${password.value}")
+                wrongEmail.value = parentEmail.value.isEmpty()
+                wrongPassword.value = password.value.isEmpty()
+                if(parentEmail.value.isNotEmpty() && password.value.isNotEmpty()) {
+                    navController.navigate("children_info_screen/${parentEmail.value}/${password.value}")
+                }
             }
         ) {
             Text(
@@ -299,9 +338,8 @@ fun ChidlrenRegistrationScreen(navController: NavController, viewModel: MainView
                       navController.popBackStack()
             },
             modifier = Modifier
-                .padding(start = 15.dp, bottom = 15.dp)
-                .fillMaxHeight()
-                .wrapContentHeight(Alignment.Bottom)
+                .padding(start = 15.dp, top = 30.dp)
+                .wrapContentHeight(Alignment.Top)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
@@ -325,6 +363,9 @@ fun ChildrenInfoScreen(
     val firstName = remember { mutableStateOf("") }
     val lastName = remember { mutableStateOf("") }
     val age = remember { mutableStateOf("") }
+    val wrongFirstName = remember { mutableStateOf(false) }
+    val wrongLastName = remember { mutableStateOf(false) }
+    val wrongAge = remember { mutableStateOf(false) }
 
     Column {
         Text(
@@ -334,64 +375,67 @@ fun ChildrenInfoScreen(
                 fontWeight = FontWeight(1000)
             ),
             modifier = Modifier
-                .padding(top = 100.dp)
+                .padding(top = 130.dp)
                 .fillMaxWidth()
                 .wrapContentWidth(CenterHorizontally),
             color = Black
-        )
-
-        Text(
-            text = "Имя",
-            style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
-            color = LightBlack,
-            modifier = Modifier
-                .padding(start = 60.dp, top = 50.dp)
-                .fillMaxWidth()
         )
 
         OutlinedTextField(
             value = firstName.value,
             onValueChange = { firstName.value = it },
             modifier = Modifier
-                .padding(top = 3.dp, start = 55.dp, end = 55.dp)
+                .padding(top = 50.dp, start = 55.dp, end = 55.dp)
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp)
-        )
-
-        Text(
-            text = "Фамилия",
-            style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
-            color = LightBlack,
-            modifier = Modifier
-                .padding(start = 60.dp, top = 20.dp)
-                .fillMaxWidth()
+            shape = RoundedCornerShape(15.dp),
+            label = {
+                Text(
+                    text = "Имя",
+                    style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
+                    color = if(wrongFirstName.value) LightRed else LightBlack
+                )
+            },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                unfocusedBorderColor = if(wrongFirstName.value) LightRed else LightBlack
+            )
         )
 
         OutlinedTextField(
             value = lastName.value,
             onValueChange = { lastName.value = it },
             modifier = Modifier
-                .padding(top = 3.dp, start = 55.dp, end = 55.dp)
+                .padding(top = 4.dp, start = 55.dp, end = 55.dp)
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp)
-        )
-
-        Text(
-            text = "Возраст",
-            style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
-            color = LightBlack,
-            modifier = Modifier
-                .padding(start = 60.dp, top = 20.dp)
-                .fillMaxWidth()
+            shape = RoundedCornerShape(15.dp),
+            label = {
+                Text(
+                    text = "Фамилия",
+                    style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
+                    color = if(wrongLastName.value) LightRed else LightBlack
+                )
+            },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                unfocusedBorderColor = if(wrongLastName.value) LightRed else LightBlack
+            )
         )
 
         OutlinedTextField(
             value = age.value,
             onValueChange = { age.value = it },
             modifier = Modifier
-                .padding(top = 3.dp, start = 55.dp, end = 55.dp)
+                .padding(top = 4.dp, start = 55.dp, end = 55.dp)
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp)
+            shape = RoundedCornerShape(15.dp),
+            label = {
+                Text(
+                    text = "Возраст",
+                    style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
+                    color = if(wrongAge.value) LightRed else LightBlack
+                )
+            },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                unfocusedBorderColor = if(wrongAge.value) LightRed else LightBlack
+            )
         )
 
         Button(
@@ -402,22 +446,26 @@ fun ChildrenInfoScreen(
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(Green),
             onClick = {
+                wrongFirstName.value = firstName.value.isEmpty()
+                wrongLastName.value = lastName.value.isEmpty()
+                wrongAge.value = age.value.isEmpty()
 
-                viewModel.registerChildren(
-                    ChildrenRegistrationRequestModel(
-                        parent_email = parentEmail,
-                        password = password,
-                        first_name = firstName.value,
-                        last_name = lastName.value,
-                        age = age.value
+                if(firstName.value.isNotEmpty() && lastName.value.isNotEmpty() && age.value.isNotEmpty()) {
+                    viewModel.registerChildren(
+                        ChildrenRegistrationRequestModel(
+                            parent_email = parentEmail,
+                            password = password,
+                            first_name = firstName.value,
+                            last_name = lastName.value,
+                            age = age.value
+                        )
                     )
-                )
+                }
 
-                viewModel.registrationStatus.observe(lifecycleOwner) {
+                viewModel.childrenRegistrationStatus.observe(lifecycleOwner) {
                     if (it == true) {
                         viewModel.resetRegStatus()
                         Toast.makeText(context, "Successful registration", Toast.LENGTH_SHORT).show()
-                        navController.navigate(Screens.ChildrenQrScreen.route)
                     }
                     else if (it == false){
                         Toast.makeText(context, "Registration error", Toast.LENGTH_SHORT).show()
@@ -441,9 +489,8 @@ fun ChildrenInfoScreen(
                       navController.popBackStack()
             },
             modifier = Modifier
-                .padding(start = 15.dp, bottom = 15.dp)
-                .fillMaxHeight()
-                .wrapContentHeight(Alignment.Bottom)
+                .padding(start = 15.dp, top = 50.dp)
+                .wrapContentHeight(Alignment.Top)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
@@ -451,12 +498,14 @@ fun ChildrenInfoScreen(
                 modifier = Modifier.size(35.dp)
             )
         }
+        
+        CircularProgressBar(isLoading = viewModel.loadingStatus.value)
     }
 }
 
 //@Preview (showSystemUi = true)
 @Composable
-fun ChildrenQrScreen(navController: NavController, viewModel: MainViewModel) {
+fun ChildrenQrScreen(navController: NavController) {
     Column {
         Text(
             text = "Твой QR-код",
