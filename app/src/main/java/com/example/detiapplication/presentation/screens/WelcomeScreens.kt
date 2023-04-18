@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.Bottom
-import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -92,17 +91,4 @@ fun SelectionScreen(navController: NavController) {
             )
         }
     }
-}
-
-//@Preview (showSystemUi = true)
-@Composable
-fun LoadingScreen() {
-    Icon(
-        painter = painterResource(id = R.drawable.loading_logo),
-        contentDescription = "loading_logo",
-        modifier = Modifier
-            .size(250.dp)
-            .wrapContentSize(Center),
-        tint = Color.Unspecified
-    )
 }

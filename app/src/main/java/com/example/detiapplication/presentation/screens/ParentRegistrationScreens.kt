@@ -1,38 +1,357 @@
 package com.example.detiapplication.presentation
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.RoundRect
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import com.example.detiapplication.R
-import com.example.detiapplication.domain.models.parent_models.ParentLoginRequestModel
-import com.example.detiapplication.domain.models.parent_models.ParentRegistrationRequestModel
+import com.example.detiapplication.data.models.parent_models.SaveChildren
+import com.example.detiapplication.domain.models.parent_models.*
 import com.example.detiapplication.presentation.screens.CircularProgressBar
 import com.example.detiapplication.presentation.screens.Screens
 import com.example.detiapplication.presentation.theme.*
+//Сделать нормальное отображение индикатора загрузки
+//Подправить повторный поиск ребенка
+@Composable
+fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel, parentEmail: String) {
+    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+    var responseModel = remember {
+        mutableStateOf(SearchChidldrenResponseModel("", "", ""))
+    }
+    val context = LocalContext.current
+
+    Surface(color = Green) {
+        Column() {
+
+            IconButton(
+                onClick = {
+                    navController.popBackStack()
+                },
+                modifier = Modifier
+                    .padding(start = 15.dp, top = 20.dp)
+                    .wrapContentHeight(CenterVertically)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_arrow_back_24),
+                    contentDescription = "back",
+                    modifier = Modifier.size(45.dp)
+                )
+            }
+            Card(
+                modifier = Modifier.padding(top = 65.dp),
+                shape = RoundedCornerShape(topEnd = 50.dp, topStart = 50.dp)
+            ) {
+                Surface(color = Color.White) {
+                    Column() {
+                        Text(
+                            text = "Добавить ребенка",
+                            style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight(1000)),
+                            color = Black,
+                            modifier = Modifier
+                                .padding(top = 25.dp)
+                                .fillMaxWidth()
+                                .wrapContentWidth(CenterHorizontally)
+                        )
+
+                        Card(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(40.dp),
+                            shape = RoundedCornerShape(40.dp)
+                        ) {
+                            Surface(color = GreenSomeLight) {
+                                Column(verticalArrangement = Arrangement.Bottom) {
+
+                                    Card(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(230.dp),
+                                        shape = RoundedCornerShape(40.dp),
+                                        border = BorderStroke(1.5.dp, LightBlack)
+                                    ) {
+                                        Surface(color = Color.White) {
+                                            Column() {
+                                                Row(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .padding(top = 15.dp)
+                                                ) {
+                                                    Text(
+                                                        text = if(responseModel.value.first_name.isNotEmpty()) responseModel.value.first_name else "Null",
+                                                        style = TextStyle(
+                                                            fontSize = 22.sp,
+                                                            fontWeight = FontWeight(800)
+                                                        ),
+                                                        modifier = Modifier.padding(start = 20.dp, end = 6.dp),
+                                                        color = LightBlack
+                                                    )
+                                                    Text(
+                                                        text = if(responseModel.value.last_name.isNotEmpty() == true) responseModel.value.last_name else "Null",
+                                                        style = TextStyle(
+                                                            fontSize = 22.sp,
+                                                            fontWeight = FontWeight(800)
+                                                        ),
+                                                        modifier = Modifier.padding(end = 20.dp),
+                                                        color = LightBlack
+                                                    )
+                                                    Card(
+                                                        modifier = Modifier
+                                                            .fillMaxWidth()
+                                                            .padding(end = 15.dp),
+                                                        shape = RoundedCornerShape(10.dp)
+                                                    ) {
+                                                        Surface(color = LightGreen) {
+                                                            Text(
+                                                                text = if(responseModel.value.age.isNotEmpty()) responseModel.value.age else "Null",
+                                                                style = TextStyle(
+                                                                    fontSize = 20.sp,
+                                                                    fontWeight = FontWeight(800)
+                                                                ),
+                                                                modifier = Modifier.wrapContentWidth(CenterHorizontally),
+                                                                color = Color.White
+                                                            )
+                                                        }
+                                                    }
+                                                }
+
+                                                Button(
+                                                    modifier = Modifier
+                                                        .padding(
+                                                            start = 35.dp,
+                                                            end = 35.dp,
+                                                            top = 20.dp
+                                                        )
+                                                        .height(55.dp)
+                                                        .fillMaxWidth(),
+                                                    shape = RoundedCornerShape(15.dp),
+                                                    colors = ButtonDefaults.buttonColors(LightOrange),
+                                                    onClick = {
+                                                        val parentToken = viewModel.getParentToken().token
+                                                        viewModel.searchChildren(SearchChidlrenRequestModel(token = parentToken, parent_email = parentEmail))
+                                                        viewModel.searchChildrenStatus.observe(lifecycleOwner) {
+                                                            if(it == true) {
+                                                                responseModel.value = SearchChidldrenResponseModel(
+                                                                    first_name = viewModel.responseModel?.value?.first_name.toString(),
+                                                                    last_name = viewModel.responseModel?.value?.last_name.toString(),
+                                                                    age = viewModel.responseModel?.value?.age.toString()
+                                                                )
+                                                            }
+                                                        }
+                                                    },
+                                                ) {
+                                                    Text(
+                                                        text = "Найти ребенка",
+                                                        style = TextStyle(
+                                                            fontSize = 19.sp,
+                                                            fontWeight = FontWeight(1000)
+                                                        ),
+                                                        color = Color.DarkGray,
+                                                        modifier = Modifier
+                                                            .wrapContentSize(Center)
+                                                    )
+                                                }
+
+                                                Button(
+                                                    modifier = Modifier
+                                                        .padding(
+                                                            start = 35.dp,
+                                                            end = 35.dp,
+                                                            top = 20.dp
+                                                        )
+                                                        .height(55.dp)
+                                                        .fillMaxWidth(),
+                                                    shape = RoundedCornerShape(15.dp),
+                                                    colors = ButtonDefaults.buttonColors(LightOrange),
+                                                    onClick = {
+                                                        val parentToken = viewModel.getParentToken().token
+                                                        viewModel.addChildren(model = AddChildrenModel(token = parentToken))
+                                                        viewModel.addChidlrenStatus.observe(lifecycleOwner) {
+                                                            if(it == true) {
+                                                                viewModel.resetAddChildrenStatus()
+                                                                Toast.makeText(context, "Children added", Toast.LENGTH_SHORT).show()
+                                                            }
+                                                            else if(it == false){
+                                                                viewModel.resetAddChildrenStatus()
+                                                                Toast.makeText(context, "Children adding error", Toast.LENGTH_SHORT).show()
+                                                            }
+                                                        }
+                                                    },
+                                                ) {
+                                                    Text(
+                                                        text = "Добавить",
+                                                        style = TextStyle(
+                                                            fontSize = 19.sp,
+                                                            fontWeight = FontWeight(1000)
+                                                        ),
+                                                        color = Color.DarkGray,
+                                                        modifier = Modifier
+                                                            .wrapContentSize(Center)
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                CircularProgressBar(isLoading = viewModel.loadingStatus.value)
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SearchChildren1Screen(navController: NavController, viewModel: MainViewModel, parentEmail: String) {
+    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+    var responseModel = remember {
+        mutableStateOf(SearchChidldrenResponseModel("", "", ""))
+    }
+    val context = LocalContext.current
+
+    Column {
+        Text(
+            text = "Добавить ребенка",
+            style = TextStyle(fontSize = 35.sp, fontWeight = FontWeight(1000)),
+            color = Black,
+            modifier = Modifier
+                .padding(top = 90.dp)
+                .fillMaxWidth()
+                .wrapContentSize(Center)
+        )
+
+        Text(
+            text = if(responseModel.value.first_name.isNotEmpty()) responseModel.value.first_name else "Null",
+            style = TextStyle(fontSize = 25.sp, fontWeight = FontWeight(1000)),
+            color = Black,
+            modifier = Modifier
+                .padding(top = 83.dp)
+                .fillMaxWidth()
+                .wrapContentSize(Center)
+        )
+
+        Text(
+            text = if(responseModel.value.last_name.isNotEmpty() == true) responseModel.value.last_name else "Null",
+            style = TextStyle(fontSize = 35.sp, fontWeight = FontWeight(1000)),
+            color = Black,
+            modifier = Modifier
+                .padding(top = 30.dp)
+                .fillMaxWidth()
+                .wrapContentSize(Center)
+        )
+
+        Text(
+            text = if(responseModel.value.age.isNotEmpty()) responseModel.value.age else "Null",
+            style = TextStyle(fontSize = 35.sp, fontWeight = FontWeight(1000)),
+            color = Black,
+            modifier = Modifier
+                .padding(top = 30.dp)
+                .fillMaxWidth()
+                .wrapContentSize(Center)
+        )
+
+        Button(
+            modifier = Modifier
+                .padding(start = 55.dp, end = 55.dp, top = 20.dp)
+                .height(55.dp)
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(15.dp),
+            colors = ButtonDefaults.buttonColors(Green),
+            onClick = {
+                val parentToken = viewModel.getParentToken().token
+                viewModel.searchChildren(SearchChidlrenRequestModel(token = parentToken, parent_email = parentEmail))
+                viewModel.searchChildrenStatus.observe(lifecycleOwner) {
+                    if(it == true) {
+                        responseModel.value = SearchChidldrenResponseModel(
+                            first_name = viewModel.responseModel?.value?.first_name.toString(),
+                            last_name = viewModel.responseModel?.value?.last_name.toString(),
+                            age = viewModel.responseModel?.value?.age.toString()
+                        )
+                    }
+                }
+            }
+        ) {
+            Text(
+                text = "Найти ребенка",
+                style = TextStyle(
+                    fontSize = 19.sp,
+                    fontWeight = FontWeight(700)
+                ),
+                color = Color.White,
+                modifier = Modifier
+                    .wrapContentSize(Center)
+            )
+        }
+
+        Button(
+            modifier = Modifier
+                .padding(start = 55.dp, end = 55.dp, top = 20.dp)
+                .height(55.dp)
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(15.dp),
+            colors = ButtonDefaults.buttonColors(Green),
+            onClick = {
+                val parentToken = viewModel.getParentToken().token
+                viewModel.addChildren(model = AddChildrenModel(token = parentToken))
+                viewModel.addChidlrenStatus.observe(lifecycleOwner) {
+                    if(it == true) {
+                        viewModel.resetAddChildrenStatus()
+                        Toast.makeText(context, "Children added", Toast.LENGTH_SHORT).show()
+                    }
+                    else if(it == false){
+                        viewModel.resetAddChildrenStatus()
+                        Toast.makeText(context, "Children adding error", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+            }
+        ) {
+            Text(
+                text = "Добавить ребенка",
+                style = TextStyle(
+                    fontSize = 19.sp,
+                    fontWeight = FontWeight(700)
+                ),
+                color = Color.White,
+                modifier = Modifier
+                    .wrapContentSize(Center)
+            )
+        }
+
+        CircularProgressBar(isLoading = viewModel.loadingStatus.value)
+    }
+}
 
 //@Preview (showSystemUi = true)
 @Composable
@@ -132,6 +451,7 @@ fun ParentSignInScreen(navController: NavController, viewModel: MainViewModel) {
                         if(it == true) {
                             viewModel.resetLoginStatusParent()
                             Toast.makeText(context, "Successful login", Toast.LENGTH_SHORT).show()
+                            navController.navigate("search_children_screen/${email.value}")
                         }
                         else if (it == false){
                             viewModel.resetLoginStatusParent()
