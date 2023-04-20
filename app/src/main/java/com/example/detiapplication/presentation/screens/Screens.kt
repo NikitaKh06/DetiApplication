@@ -3,6 +3,7 @@ package com.example.detiapplication.presentation.screens
 sealed class Screens(val route: String) {
     object SelectionScreen: Screens(route = "selection_screen")
 
+    object ChildrenScheduleMainScreen: Screens(route = "children_schedule_main_screen")
     object SearchChildrenScreen: Screens(route = "search_children_screen/{parent_email}")
 
     object ParentSignInScreen: Screens(route = "parent_sign_in_screen")

@@ -1,13 +1,10 @@
 package com.example.detiapplication.presentation
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.detiapplication.data.models.parent_models.GetChildren
 import com.example.detiapplication.data.models.parent_models.GetParentToken
-import com.example.detiapplication.data.models.parent_models.SaveChildren
 import com.example.detiapplication.data.models.parent_models.SaveParentToken
 import com.example.detiapplication.data.repositories.children_repositories.ChildrenRegisterApi
 import com.example.detiapplication.data.repositories.parent_repositories.ParentRegisterApi
@@ -145,7 +142,10 @@ class MainViewModel(private val parentRegistrationRepository: ParentRegistration
                 loadingStatus.value = false
             } catch (_: Exception) {  }
         }
+    }
 
+    fun resetChildrenModel() {
+        responseModel.value = SearchChidldrenResponseModel("Ребенок", "не", "найден")
     }
 
     fun resetAddChildrenStatus() {

@@ -1,8 +1,6 @@
 package com.example.detiapplication.presentation
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -17,7 +15,7 @@ class MainActivity : ComponentActivity() {
     lateinit var navController: NavHostController
     lateinit var viewModel: MainViewModel
     lateinit var parentRepository: ParentRegistrationRepository
-
+//Сделать выбор начального экрана в зависимости от наличия токена
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()

@@ -1,9 +1,7 @@
-package com.example.detiapplication.presentation
+package com.example.detiapplication.presentation.screens
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -15,42 +13,33 @@ import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.RoundRect
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import com.example.detiapplication.R
-import com.example.detiapplication.data.models.parent_models.SaveChildren
 import com.example.detiapplication.domain.models.parent_models.*
-import com.example.detiapplication.presentation.screens.CircularProgressBar
-import com.example.detiapplication.presentation.screens.Screens
+import com.example.detiapplication.presentation.MainViewModel
 import com.example.detiapplication.presentation.theme.*
-//Сделать нормальное отображение индикатора загрузки
-//Подправить повторный поиск ребенка
+
 @Composable
 fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel, parentEmail: String) {
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
-    var responseModel = remember {
+    val responseModel = remember {
         mutableStateOf(SearchChidldrenResponseModel("", "", ""))
     }
     val context = LocalContext.current
 
     Surface(color = Green) {
-        Column() {
+        Column {
 
             IconButton(
                 onClick = {
@@ -63,7 +52,8 @@ fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel,
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_arrow_back_24),
                     contentDescription = "back",
-                    modifier = Modifier.size(45.dp)
+                    modifier = Modifier.size(45.dp),
+                    tint = Color.Unspecified
                 )
             }
             Card(
@@ -71,7 +61,7 @@ fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel,
                 shape = RoundedCornerShape(topEnd = 50.dp, topStart = 50.dp)
             ) {
                 Surface(color = Color.White) {
-                    Column() {
+                    Column {
                         Text(
                             text = "Добавить ребенка",
                             style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight(1000)),
@@ -99,14 +89,14 @@ fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel,
                                         border = BorderStroke(1.5.dp, LightBlack)
                                     ) {
                                         Surface(color = Color.White) {
-                                            Column() {
+                                            Column {
                                                 Row(
                                                     modifier = Modifier
                                                         .fillMaxWidth()
-                                                        .padding(top = 15.dp)
+                                                        .padding(top = 20.dp)
                                                 ) {
                                                     Text(
-                                                        text = if(responseModel.value.first_name.isNotEmpty()) responseModel.value.first_name else "Null",
+                                                        text = if(responseModel.value.first_name.isNotEmpty()) responseModel.value.first_name else "Ребенок",
                                                         style = TextStyle(
                                                             fontSize = 22.sp,
                                                             fontWeight = FontWeight(800)
@@ -115,7 +105,7 @@ fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel,
                                                         color = LightBlack
                                                     )
                                                     Text(
-                                                        text = if(responseModel.value.last_name.isNotEmpty() == true) responseModel.value.last_name else "Null",
+                                                        text = if(responseModel.value.last_name.isNotEmpty() == true) responseModel.value.last_name else "не",
                                                         style = TextStyle(
                                                             fontSize = 22.sp,
                                                             fontWeight = FontWeight(800)
@@ -131,7 +121,7 @@ fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel,
                                                     ) {
                                                         Surface(color = LightGreen) {
                                                             Text(
-                                                                text = if(responseModel.value.age.isNotEmpty()) responseModel.value.age else "Null",
+                                                                text = if(responseModel.value.age.isNotEmpty()) responseModel.value.age else "найден",
                                                                 style = TextStyle(
                                                                     fontSize = 20.sp,
                                                                     fontWeight = FontWeight(800)
@@ -160,9 +150,9 @@ fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel,
                                                         viewModel.searchChildrenStatus.observe(lifecycleOwner) {
                                                             if(it == true) {
                                                                 responseModel.value = SearchChidldrenResponseModel(
-                                                                    first_name = viewModel.responseModel?.value?.first_name.toString(),
-                                                                    last_name = viewModel.responseModel?.value?.last_name.toString(),
-                                                                    age = viewModel.responseModel?.value?.age.toString()
+                                                                    first_name = viewModel.responseModel.value?.first_name.toString(),
+                                                                    last_name = viewModel.responseModel.value?.last_name.toString(),
+                                                                    age = viewModel.responseModel.value?.age.toString()
                                                                 )
                                                             }
                                                         }
@@ -204,6 +194,7 @@ fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel,
                                                                 Toast.makeText(context, "Children adding error", Toast.LENGTH_SHORT).show()
                                                             }
                                                         }
+                                                        viewModel.resetChildrenModel()
                                                     },
                                                 ) {
                                                     Text(
@@ -235,7 +226,7 @@ fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel,
 @Composable
 fun SearchChildren1Screen(navController: NavController, viewModel: MainViewModel, parentEmail: String) {
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
-    var responseModel = remember {
+    val responseModel = remember {
         mutableStateOf(SearchChidldrenResponseModel("", "", ""))
     }
     val context = LocalContext.current
@@ -294,9 +285,9 @@ fun SearchChildren1Screen(navController: NavController, viewModel: MainViewModel
                 viewModel.searchChildrenStatus.observe(lifecycleOwner) {
                     if(it == true) {
                         responseModel.value = SearchChidldrenResponseModel(
-                            first_name = viewModel.responseModel?.value?.first_name.toString(),
-                            last_name = viewModel.responseModel?.value?.last_name.toString(),
-                            age = viewModel.responseModel?.value?.age.toString()
+                            first_name = viewModel.responseModel.value?.first_name.toString(),
+                            last_name = viewModel.responseModel.value?.last_name.toString(),
+                            age = viewModel.responseModel.value?.age.toString()
                         )
                     }
                 }

@@ -17,6 +17,12 @@ fun SetupNavGraph(navController: NavHostController, viewModel: MainViewModel) {
     ) {
 
         composable(
+            route = Screens.ChildrenScheduleMainScreen.route
+        ) {
+            ChildrenScheduleMainScreen()
+        }
+
+        composable(
             route = Screens.SearchChildrenScreen.route,
             arguments = listOf(
                 navArgument(name = "parent_email") {

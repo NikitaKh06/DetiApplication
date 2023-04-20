@@ -78,7 +78,7 @@ fun SelectionScreen(navController: NavController) {
         }
 
         IconButton(
-            onClick = { },
+            onClick = {  },
             modifier = Modifier
                 .padding(start = 15.dp, bottom = 15.dp)
                 .fillMaxHeight()
