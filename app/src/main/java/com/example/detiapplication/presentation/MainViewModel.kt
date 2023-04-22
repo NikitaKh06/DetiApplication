@@ -22,7 +22,7 @@ class MainViewModel(private val parentRegistrationRepository: ParentRegistration
     val searchChildrenStatus = MutableLiveData<Boolean?>(null)
     var loadingStatus = mutableStateOf(false)
     var responseModel: MutableLiveData<SearchChidldrenResponseModel?> = MutableLiveData(SearchChidldrenResponseModel("", "", ""))
-    val addChidlrenStatus = MutableLiveData<Boolean?>(null)
+    val addChildrenStatus = MutableLiveData<Boolean?>(null)
 
     //Children
     fun registerChildren(model: ChildrenRegistrationRequestModel) {
@@ -110,7 +110,7 @@ class MainViewModel(private val parentRegistrationRepository: ParentRegistration
         loadingStatus.value = true
         viewModelScope.launch {
             try {
-                var response = request.searchChildren(model)
+                val response = request.searchChildren(model)
                 if(response.body() != null) {
                     responseModel.value = SearchChidldrenResponseModel(
                         first_name = response.body()?.first_name.toString(),
@@ -134,10 +134,10 @@ class MainViewModel(private val parentRegistrationRepository: ParentRegistration
             try {
                 val respond = request.addChildren(model)
                 if (respond.body() == true) {
-                    addChidlrenStatus.value = true
+                    addChildrenStatus.value = true
                 }
                 else if(respond.body() == null) {
-                    addChidlrenStatus.value = false
+                    addChildrenStatus.value = false
                 }
                 loadingStatus.value = false
             } catch (_: Exception) {  }
@@ -149,6 +149,6 @@ class MainViewModel(private val parentRegistrationRepository: ParentRegistration
     }
 
     fun resetAddChildrenStatus() {
-        addChidlrenStatus.value = null
+        addChildrenStatus.value = null
     }
 }

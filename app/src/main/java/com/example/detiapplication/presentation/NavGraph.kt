@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.detiapplication.presentation.screens.*
+import com.example.detiapplication.presentation.screens.bottom_navigation.*
 
 @Composable
 fun SetupNavGraph(navController: NavHostController, viewModel: MainViewModel) {
@@ -17,9 +18,9 @@ fun SetupNavGraph(navController: NavHostController, viewModel: MainViewModel) {
     ) {
 
         composable(
-            route = Screens.ChildrenScheduleMainScreen.route
+            route = Screens.MainNavScreen.route
         ) {
-            ChildrenScheduleMainScreen()
+            MainNavScreen()
         }
 
         composable(

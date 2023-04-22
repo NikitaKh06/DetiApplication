@@ -12,15 +12,15 @@ import com.example.detiapplication.presentation.theme.DetiApplicationTheme
 
 class MainActivity : ComponentActivity() {
 
-    lateinit var navController: NavHostController
-    lateinit var viewModel: MainViewModel
-    lateinit var parentRepository: ParentRegistrationRepository
+    private lateinit var navController: NavHostController
+    private lateinit var viewModel: MainViewModel
+    private lateinit var parentRepository: ParentRegistrationRepository
 //Сделать выбор начального экрана в зависимости от наличия токена
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
 
-        viewModel = ViewModelProvider(this, MainViewModelFactory(this)).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this, MainViewModelFactory(this))[MainViewModel::class.java]
         setContent {
             DetiApplicationTheme {
                 parentRepository = ParentRegistrationRepository(context = this)

@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -32,15 +33,9 @@ import com.example.detiapplication.presentation.MainViewModel
 import com.example.detiapplication.presentation.theme.*
 
 @Composable
-fun CircularProgressBar(isLoading: Boolean) {
-    Row(
-        horizontalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .wrapContentHeight(CenterVertically)
-    ) {
-        if(isLoading) {
+fun CircularProgressBar(isLoading: Boolean, modifier: Modifier) {
+    if(isLoading) {
+        Box(modifier = modifier) {
             CircularProgressIndicator(
                 color = Color.Gray,
                 modifier = Modifier.size(25.dp)
@@ -145,7 +140,7 @@ fun ChildrenSignInScreen(navController: NavController, viewModel: MainViewModel)
                     viewModel.childrenLoginStatus.observe(lifecycleOwner) {
                         if(it == true) {
                             Toast.makeText(context, "Successful login", Toast.LENGTH_SHORT).show()
-                            navController.navigate(Screens.ChildrenScheduleMainScreen.route)
+                            navController.navigate(Screens.MainNavScreen.route)
                             viewModel.resetLoginStatus()
                         }
                         else if (it == false) {
@@ -207,26 +202,37 @@ fun ChildrenSignInScreen(navController: NavController, viewModel: MainViewModel)
             onClick = {}
         )
 
-        IconButton(
-            onClick = {
-                navController.popBackStack()
-            },
+        Box(
             modifier = Modifier
-                .padding(start = 15.dp, top = 20.dp)
-                .wrapContentHeight(CenterVertically)
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .wrapContentHeight(Bottom)
+                .padding(bottom = 15.dp)
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
-                contentDescription = "back",
-                modifier = Modifier.size(35.dp)
+            IconButton(
+                onClick = {
+                    navController.popBackStack()
+                },
+                modifier = Modifier
+                    .padding(start = 15.dp, top = 20.dp)
+                    .wrapContentHeight(CenterVertically)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
+                    contentDescription = "back",
+                    modifier = Modifier.size(35.dp)
+                )
+            }
+
+            CircularProgressBar(
+                isLoading = viewModel.loadingStatus.value,
+                modifier = Modifier
+                    .align(Alignment.Center)
             )
         }
-
-        CircularProgressBar(isLoading = viewModel.loadingStatus.value)
     }
 }
 
-//@Preview (showSystemUi = true)
 @Composable
 fun ChidlrenRegistrationScreen(navController: NavController) {
     val parentEmail = remember { mutableStateOf("") }
@@ -334,24 +340,28 @@ fun ChidlrenRegistrationScreen(navController: NavController) {
 
         }
 
-        IconButton(
-            onClick = {
-                      navController.popBackStack()
-            },
-            modifier = Modifier
-                .padding(start = 15.dp, top = 30.dp)
-                .wrapContentHeight(Alignment.Top)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
-                contentDescription = "back",
-                modifier = Modifier.size(35.dp)
-            )
+        Box(modifier = Modifier
+            .fillMaxHeight()
+            .wrapContentHeight(Bottom)
+            .padding(bottom = 15.dp)) {
+            IconButton(
+                onClick = {
+                    navController.popBackStack()
+                },
+                modifier = Modifier
+                    .padding(start = 15.dp, top = 30.dp)
+                    .wrapContentHeight(Alignment.Top)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
+                    contentDescription = "back",
+                    modifier = Modifier.size(35.dp)
+                )
+            }
         }
     }
 }
 
-//@Preview (showSystemUi = true)
 @Composable
 fun ChildrenInfoScreen(
     navController: NavController,
@@ -485,26 +495,36 @@ fun ChildrenInfoScreen(
             )
         }
 
-        IconButton(
-            onClick = {
-                      navController.popBackStack()
-            },
+        Box(
             modifier = Modifier
-                .padding(start = 15.dp, top = 50.dp)
-                .wrapContentHeight(Alignment.Top)
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .wrapContentHeight(Bottom)
+                .padding(bottom = 15.dp)
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
-                contentDescription = "back",
-                modifier = Modifier.size(35.dp)
+            IconButton(
+                onClick = {
+                    navController.popBackStack()
+                },
+                modifier = Modifier
+                    .padding(start = 15.dp, top = 50.dp)
+                    .wrapContentHeight(Alignment.Top)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
+                    contentDescription = "back",
+                    modifier = Modifier.size(35.dp)
+                )
+            }
+
+            CircularProgressBar(
+                isLoading = viewModel.loadingStatus.value,
+                modifier = Modifier.align(Alignment.Center)
             )
         }
-        
-        CircularProgressBar(isLoading = viewModel.loadingStatus.value)
     }
 }
 
-//@Preview (showSystemUi = true)
 @Composable
 fun ChildrenQrScreen(navController: NavController) {
     Column {
@@ -572,7 +592,7 @@ fun ChildrenQrScreen(navController: NavController) {
             modifier = Modifier
                 .padding(start = 15.dp, bottom = 15.dp)
                 .fillMaxHeight()
-                .wrapContentHeight(Alignment.Bottom)
+                .wrapContentHeight(Bottom)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),

@@ -96,7 +96,7 @@ fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel,
                                                         .padding(top = 20.dp)
                                                 ) {
                                                     Text(
-                                                        text = if(responseModel.value.first_name.isNotEmpty()) responseModel.value.first_name else "Ребенок",
+                                                        text = responseModel.value.first_name.ifEmpty { "Ребенок" },
                                                         style = TextStyle(
                                                             fontSize = 22.sp,
                                                             fontWeight = FontWeight(800)
@@ -105,7 +105,7 @@ fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel,
                                                         color = LightBlack
                                                     )
                                                     Text(
-                                                        text = if(responseModel.value.last_name.isNotEmpty() == true) responseModel.value.last_name else "не",
+                                                        text = responseModel.value.last_name.ifEmpty { "не" },
                                                         style = TextStyle(
                                                             fontSize = 22.sp,
                                                             fontWeight = FontWeight(800)
@@ -121,7 +121,7 @@ fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel,
                                                     ) {
                                                         Surface(color = LightGreen) {
                                                             Text(
-                                                                text = if(responseModel.value.age.isNotEmpty()) responseModel.value.age else "найден",
+                                                                text = responseModel.value.age.ifEmpty { "найден" },
                                                                 style = TextStyle(
                                                                     fontSize = 20.sp,
                                                                     fontWeight = FontWeight(800)
@@ -184,7 +184,7 @@ fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel,
                                                     onClick = {
                                                         val parentToken = viewModel.getParentToken().token
                                                         viewModel.addChildren(model = AddChildrenModel(token = parentToken))
-                                                        viewModel.addChidlrenStatus.observe(lifecycleOwner) {
+                                                        viewModel.addChildrenStatus.observe(lifecycleOwner) {
                                                             if(it == true) {
                                                                 viewModel.resetAddChildrenStatus()
                                                                 Toast.makeText(context, "Children added", Toast.LENGTH_SHORT).show()
@@ -212,7 +212,12 @@ fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel,
                                         }
                                     }
                                 }
-                                CircularProgressBar(isLoading = viewModel.loadingStatus.value)
+                                CircularProgressBar(
+                                    isLoading = viewModel.loadingStatus.value,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .wrapContentSize(Center)
+                                )
                             }
                         }
 
@@ -223,128 +228,6 @@ fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel,
     }
 }
 
-@Composable
-fun SearchChildren1Screen(navController: NavController, viewModel: MainViewModel, parentEmail: String) {
-    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
-    val responseModel = remember {
-        mutableStateOf(SearchChidldrenResponseModel("", "", ""))
-    }
-    val context = LocalContext.current
-
-    Column {
-        Text(
-            text = "Добавить ребенка",
-            style = TextStyle(fontSize = 35.sp, fontWeight = FontWeight(1000)),
-            color = Black,
-            modifier = Modifier
-                .padding(top = 90.dp)
-                .fillMaxWidth()
-                .wrapContentSize(Center)
-        )
-
-        Text(
-            text = if(responseModel.value.first_name.isNotEmpty()) responseModel.value.first_name else "Null",
-            style = TextStyle(fontSize = 25.sp, fontWeight = FontWeight(1000)),
-            color = Black,
-            modifier = Modifier
-                .padding(top = 83.dp)
-                .fillMaxWidth()
-                .wrapContentSize(Center)
-        )
-
-        Text(
-            text = if(responseModel.value.last_name.isNotEmpty() == true) responseModel.value.last_name else "Null",
-            style = TextStyle(fontSize = 35.sp, fontWeight = FontWeight(1000)),
-            color = Black,
-            modifier = Modifier
-                .padding(top = 30.dp)
-                .fillMaxWidth()
-                .wrapContentSize(Center)
-        )
-
-        Text(
-            text = if(responseModel.value.age.isNotEmpty()) responseModel.value.age else "Null",
-            style = TextStyle(fontSize = 35.sp, fontWeight = FontWeight(1000)),
-            color = Black,
-            modifier = Modifier
-                .padding(top = 30.dp)
-                .fillMaxWidth()
-                .wrapContentSize(Center)
-        )
-
-        Button(
-            modifier = Modifier
-                .padding(start = 55.dp, end = 55.dp, top = 20.dp)
-                .height(55.dp)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp),
-            colors = ButtonDefaults.buttonColors(Green),
-            onClick = {
-                val parentToken = viewModel.getParentToken().token
-                viewModel.searchChildren(SearchChidlrenRequestModel(token = parentToken, parent_email = parentEmail))
-                viewModel.searchChildrenStatus.observe(lifecycleOwner) {
-                    if(it == true) {
-                        responseModel.value = SearchChidldrenResponseModel(
-                            first_name = viewModel.responseModel.value?.first_name.toString(),
-                            last_name = viewModel.responseModel.value?.last_name.toString(),
-                            age = viewModel.responseModel.value?.age.toString()
-                        )
-                    }
-                }
-            }
-        ) {
-            Text(
-                text = "Найти ребенка",
-                style = TextStyle(
-                    fontSize = 19.sp,
-                    fontWeight = FontWeight(700)
-                ),
-                color = Color.White,
-                modifier = Modifier
-                    .wrapContentSize(Center)
-            )
-        }
-
-        Button(
-            modifier = Modifier
-                .padding(start = 55.dp, end = 55.dp, top = 20.dp)
-                .height(55.dp)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(15.dp),
-            colors = ButtonDefaults.buttonColors(Green),
-            onClick = {
-                val parentToken = viewModel.getParentToken().token
-                viewModel.addChildren(model = AddChildrenModel(token = parentToken))
-                viewModel.addChidlrenStatus.observe(lifecycleOwner) {
-                    if(it == true) {
-                        viewModel.resetAddChildrenStatus()
-                        Toast.makeText(context, "Children added", Toast.LENGTH_SHORT).show()
-                    }
-                    else if(it == false){
-                        viewModel.resetAddChildrenStatus()
-                        Toast.makeText(context, "Children adding error", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-            }
-        ) {
-            Text(
-                text = "Добавить ребенка",
-                style = TextStyle(
-                    fontSize = 19.sp,
-                    fontWeight = FontWeight(700)
-                ),
-                color = Color.White,
-                modifier = Modifier
-                    .wrapContentSize(Center)
-            )
-        }
-
-        CircularProgressBar(isLoading = viewModel.loadingStatus.value)
-    }
-}
-
-//@Preview (showSystemUi = true)
 @Composable
 fun ParentSignInScreen(navController: NavController, viewModel: MainViewModel) {
     val email = remember { mutableStateOf("") }
@@ -501,26 +384,36 @@ fun ParentSignInScreen(navController: NavController, viewModel: MainViewModel) {
             onClick = {}
         )
 
-        IconButton(
-            onClick = {
-                navController.popBackStack()
-            },
+        Box(
             modifier = Modifier
-                .padding(start = 15.dp, top = 20.dp)
-                .wrapContentHeight(CenterVertically)
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .wrapContentHeight(Bottom)
+                .padding(bottom = 15.dp)
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
-                contentDescription = "back",
-                modifier = Modifier.size(35.dp)
+            IconButton(
+                onClick = {
+                    navController.popBackStack()
+                },
+                modifier = Modifier
+                    .padding(start = 15.dp, top = 20.dp)
+                    .wrapContentHeight(CenterVertically)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
+                    contentDescription = "back",
+                    modifier = Modifier.size(35.dp)
+                )
+            }
+
+            CircularProgressBar(
+                isLoading = viewModel.loadingStatus.value,
+                modifier = Modifier.align(Center)
             )
         }
-
-        CircularProgressBar(isLoading = viewModel.loadingStatus.value)
     }
 }
 
-//@Preview (showSystemUi = true)
 @Composable
 fun ParentInfoScreen(navController: NavController, viewModel: MainViewModel, email: String, password: String) {
     val firstName = remember { mutableStateOf("") }
@@ -627,26 +520,36 @@ fun ParentInfoScreen(navController: NavController, viewModel: MainViewModel, ema
             )
         }
 
-        IconButton(
-            onClick = {
-                      navController.popBackStack()
-            },
+        Box(
             modifier = Modifier
-                .padding(start = 15.dp, top = 90.dp)
-                .wrapContentHeight(Alignment.Top)
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .wrapContentHeight(Bottom)
+                .padding(bottom = 15.dp)
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
-                contentDescription = "back",
-                modifier = Modifier.size(35.dp)
+            IconButton(
+                onClick = {
+                    navController.popBackStack()
+                },
+                modifier = Modifier
+                    .padding(start = 15.dp, top = 90.dp)
+                    .wrapContentHeight(Alignment.Top)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
+                    contentDescription = "back",
+                    modifier = Modifier.size(35.dp)
+                )
+            }
+
+            CircularProgressBar(
+                isLoading = viewModel.loadingStatus.value,
+                modifier = Modifier.align(Center)
             )
         }
-
-        CircularProgressBar(isLoading = viewModel.loadingStatus.value)
     }
 }
 
-//@Preview (showSystemUi = true)
 @Composable
 fun ParentQrScreen(navController: NavController) {
     Column {
@@ -730,7 +633,6 @@ fun ParentQrScreen(navController: NavController) {
     }
 }
 
-//@Preview (showSystemUi = true)
 @Composable
 fun ParentRegistrationScreen(navController: NavController) {
     val email = remember { mutableStateOf("") }
@@ -833,19 +735,26 @@ fun ParentRegistrationScreen(navController: NavController) {
             )
         }
 
-        IconButton(
-            onClick = {
-                      navController.popBackStack()
-            },
+        Box(
             modifier = Modifier
-                .padding(start = 15.dp, top = 40.dp)
-                .wrapContentHeight(CenterVertically)
+                .fillMaxHeight()
+                .wrapContentHeight(Bottom)
+                .padding(bottom = 15.dp)
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
-                contentDescription = "back",
-                modifier = Modifier.size(35.dp)
-            )
+            IconButton(
+                onClick = {
+                    navController.popBackStack()
+                },
+                modifier = Modifier
+                    .padding(start = 15.dp, top = 40.dp)
+                    .wrapContentHeight(CenterVertically)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
+                    contentDescription = "back",
+                    modifier = Modifier.size(35.dp)
+                )
+            }
         }
     }
 }

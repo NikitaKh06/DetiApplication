@@ -1,53 +1,26 @@
-package com.example.detiapplication.presentation.screens
+package com.example.detiapplication.presentation.screens.bottom_navigation
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment.Companion.Center
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.detiapplication.presentation.theme.*
 
 @Composable
-fun SubjectElement() {
-    Card(
+fun HomeScreen(navController: NavController, bottomPaddingValues: PaddingValues) {
+    Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(85.dp)
-            .padding(start = 20.dp, end = 20.dp, top = 20.dp),
-        shape = RoundedCornerShape(10.dp)
+            .fillMaxSize()
+            .padding(bottom = bottomPaddingValues.calculateBottomPadding() + 15.dp)
     ) {
-        Surface(color = GreenMoreDark) {
-            Column() {
-                Text(
-                    text = "Математика",
-                    style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight(800)),
-                    color = Color.White,
-                    modifier = Modifier.padding(start = 20.dp)
-                )
-                Text(
-                    text = "14:30 - 15:30",
-                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight(800)),
-                    color = CustomWhite,
-                    modifier = Modifier.padding(start = 22.dp)
-                )
-            }
-        }
-    }
-}
-
-@Preview(showSystemUi = true)
-@Composable
-fun ChildrenScheduleMainScreen() {
-    Column {
-        
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -65,14 +38,18 @@ fun ChildrenScheduleMainScreen() {
                         style = TextStyle(fontSize = 25.sp, fontWeight = FontWeight(800)),
                         color = Color.White,
                         modifier = Modifier
-                            .align(CenterHorizontally)
+                            .align(Alignment.CenterHorizontally)
                     )
 
+                    SubjectElement()
+                    SubjectElement()
+                    SubjectElement()
+                    SubjectElement()
                     SubjectElement()
                 }
             }
         }
-        
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -91,7 +68,7 @@ fun ChildrenScheduleMainScreen() {
                     Column(
                         modifier = Modifier
                             .fillMaxSize(),
-                        horizontalAlignment = CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
                             text = "15",
@@ -99,7 +76,7 @@ fun ChildrenScheduleMainScreen() {
                                 fontSize = 30.sp,
                                 fontWeight = FontWeight(800)
                             ),
-                            modifier = Modifier.wrapContentWidth(CenterHorizontally),
+                            modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally),
                             color = Black
                         )
                         Text(
@@ -108,7 +85,7 @@ fun ChildrenScheduleMainScreen() {
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight(800)
                             ),
-                            modifier = Modifier.wrapContentWidth(CenterHorizontally),
+                            modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally),
                             color = Black
                         )
                     }
@@ -130,7 +107,7 @@ fun ChildrenScheduleMainScreen() {
                         ),
                         modifier = Modifier
                             .fillMaxSize()
-                            .wrapContentSize(Center),
+                            .wrapContentSize(Alignment.Center),
                         color = Black
                     )
                 }
@@ -148,7 +125,7 @@ fun ChildrenScheduleMainScreen() {
                 /*TODO*/
             }
         ) {
-            Column(horizontalAlignment = CenterHorizontally) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
                     text = "Добавить",
                     style = TextStyle(fontSize = 23.sp, fontWeight = FontWeight(800)),
@@ -173,11 +150,39 @@ fun ChildrenScheduleMainScreen() {
                 /*TODO*/
             }
         ) {
-            Column(horizontalAlignment = CenterHorizontally) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
                     text = "SOS",
                     style = TextStyle(fontSize = 23.sp, fontWeight = FontWeight(800)),
                     color = Color.White
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun SubjectElement() {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(70.dp)
+            .padding(start = 20.dp, end = 20.dp, top = 10.dp),
+        shape = RoundedCornerShape(10.dp)
+    ) {
+        Surface(color = GreenMoreDark) {
+            Column {
+                Text(
+                    text = "Математика",
+                    style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight(800)),
+                    color = Color.White,
+                    modifier = Modifier.padding(start = 20.dp)
+                )
+                Text(
+                    text = "14:30 - 15:30",
+                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight(800)),
+                    color = CustomWhite,
+                    modifier = Modifier.padding(start = 22.dp)
                 )
             }
         }
