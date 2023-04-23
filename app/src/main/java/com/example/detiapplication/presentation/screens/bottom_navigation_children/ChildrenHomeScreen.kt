@@ -1,4 +1,4 @@
-package com.example.detiapplication.presentation.screens.bottom_navigation
+package com.example.detiapplication.presentation.screens.bottom_navigation_children
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,7 +15,7 @@ import androidx.navigation.NavController
 import com.example.detiapplication.presentation.theme.*
 
 @Composable
-fun HomeScreen(navController: NavController, bottomPaddingValues: PaddingValues) {
+fun ChildrenHomeScreen(navController: NavController, bottomPaddingValues: PaddingValues) {
     Column(
         modifier = Modifier
             .fillMaxSize()

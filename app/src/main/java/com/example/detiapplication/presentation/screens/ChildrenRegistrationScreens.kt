@@ -140,7 +140,7 @@ fun ChildrenSignInScreen(navController: NavController, viewModel: MainViewModel)
                     viewModel.childrenLoginStatus.observe(lifecycleOwner) {
                         if(it == true) {
                             Toast.makeText(context, "Successful login", Toast.LENGTH_SHORT).show()
-                            navController.navigate(Screens.MainNavScreen.route)
+                            navController.navigate(Screens.ChildrenMainNavScreen.route)
                             viewModel.resetLoginStatus()
                         }
                         else if (it == false) {

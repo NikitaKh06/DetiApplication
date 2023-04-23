@@ -1,4 +1,4 @@
-package com.example.detiapplication.presentation.screens.bottom_navigation
+package com.example.detiapplication.presentation.screens.bottom_navigation_children
 
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -10,21 +10,21 @@ import androidx.navigation.compose.rememberNavController
 import com.example.detiapplication.presentation.theme.*
 
 @Composable
-fun MainNavScreen() {
+fun ChildrenMainNavScreen() {
     val navController = rememberNavController()
     Scaffold(
-        bottomBar = { BottomBar(navController = navController) }
+        bottomBar = { ChildrenBottomBar(navController = navController) }
         ) {
-            BottomNavGraph(navController = navController, paddingValues = it)
-        }
+            BottomNavGraphChildren(navController = navController, paddingValues = it)
+    }
 }
 
 @Composable
-fun BottomBar(navController: NavController) {
+fun ChildrenBottomBar(navController: NavController) {
     val screens = listOf(
-        BottomBarScreens.ProfileScreen,
-        BottomBarScreens.HomeScreen,
-        BottomBarScreens.SettingsScreen
+        BottomBarScreensChildren.ProfileScreen,
+        BottomBarScreensChildren.HomeScreen,
+        BottomBarScreensChildren.SettingsScreen
     )
 
     BottomNavigation(
