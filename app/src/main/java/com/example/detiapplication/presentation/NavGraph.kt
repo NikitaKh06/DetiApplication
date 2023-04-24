@@ -8,14 +8,22 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.detiapplication.presentation.screens.*
 import com.example.detiapplication.presentation.screens.bottom_navigation_children.*
+import com.example.detiapplication.presentation.screens.bottom_navigation_parent.ParentMainNavScreen
+import com.example.detiapplication.presentation.viewmodels.MainViewModel
 
 @Composable
-fun SetupNavGraph(navController: NavHostController, viewModel: MainViewModel) {
+fun SetupNavGraph(navController: NavHostController) {
 
     NavHost(
         navController = navController,
         startDestination = Screens.SelectionScreen.route
     ) {
+
+        composable(
+            route = Screens.ParentMainNavScreen.route
+        ) {
+            ParentMainNavScreen()
+        }
 
         composable(
             route = Screens.ChildrenMainNavScreen.route
@@ -33,7 +41,6 @@ fun SetupNavGraph(navController: NavHostController, viewModel: MainViewModel) {
         ) {
             SearchChildrenScreen(
                 navController = navController,
-                viewModel = viewModel,
                 parentEmail = it.arguments?.getString("parent_email").toString()
             )
         }
@@ -49,7 +56,7 @@ fun SetupNavGraph(navController: NavHostController, viewModel: MainViewModel) {
         composable(
             route = Screens.ChildrenSignInScreen.route
         ) {
-            ChildrenSignInScreen(navController = navController, viewModel = viewModel)
+            ChildrenSignInScreen(navController = navController)
         }
 
         composable(
@@ -71,23 +78,16 @@ fun SetupNavGraph(navController: NavHostController, viewModel: MainViewModel) {
         ) {
             ChildrenInfoScreen(
                 navController = navController,
-                viewModel = viewModel,
                 parentEmail = it.arguments?.getString("parent_email").toString(),
                 password = it.arguments?.getString("password").toString()
             )
-        }
-
-        composable(
-            route = Screens.ChildrenQrScreen.route
-        ) {
-            ChildrenQrScreen(navController = navController)
         }
 
         //Parent
         composable(
             route = Screens.ParentSignInScreen.route
         ) {
-            ParentSignInScreen(navController = navController, viewModel = viewModel)
+            ParentSignInScreen(navController = navController)
         }
 
         composable(
@@ -109,16 +109,9 @@ fun SetupNavGraph(navController: NavHostController, viewModel: MainViewModel) {
         ) {
             ParentInfoScreen(
                 navController = navController,
-                viewModel = viewModel,
                 email = it.arguments?.getString("email").toString(),
                 password = it.arguments?.getString("password").toString()
             )
-        }
-
-        composable(
-            route = Screens.ParentQrScreen.route
-        ) {
-            ParentQrScreen(navController = navController)
         }
     }
 }

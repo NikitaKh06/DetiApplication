@@ -1,4 +1,4 @@
-package com.example.detiapplication.presentation
+package com.example.detiapplication.presentation.viewmodels
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData

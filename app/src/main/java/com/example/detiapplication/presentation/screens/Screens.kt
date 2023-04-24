@@ -4,7 +4,7 @@ sealed class Screens(val route: String) {
     object SelectionScreen: Screens(route = "selection_screen")
 
     object ChildrenMainNavScreen: Screens(route = "main_nav_screen")
-    object ParentMainNavScreen: Screens(route = "main_nav_screen")
+    object ParentMainNavScreen: Screens(route = "parent_main_nav_screen")
 
     object SearchChildrenScreen: Screens(route = "search_children_screen/{parent_email}")
 

@@ -27,11 +27,12 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import com.example.detiapplication.R
 import com.example.detiapplication.domain.models.parent_models.*
-import com.example.detiapplication.presentation.MainViewModel
+import com.example.detiapplication.presentation.viewmodels.MainViewModel
 import com.example.detiapplication.presentation.theme.*
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel, parentEmail: String) {
+fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel = koinViewModel(), parentEmail: String) {
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
     val responseModel = remember {
         mutableStateOf(SearchChidldrenResponseModel("", "", ""))
@@ -40,7 +41,6 @@ fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel,
 
     Surface(color = Green) {
         Column {
-
             IconButton(
                 onClick = {
                     navController.popBackStack()
@@ -229,7 +229,7 @@ fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel,
 }
 
 @Composable
-fun ParentSignInScreen(navController: NavController, viewModel: MainViewModel) {
+fun ParentSignInScreen(navController: NavController, viewModel: MainViewModel = koinViewModel()) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -325,7 +325,7 @@ fun ParentSignInScreen(navController: NavController, viewModel: MainViewModel) {
                         if(it == true) {
                             viewModel.resetLoginStatusParent()
                             Toast.makeText(context, "Successful login", Toast.LENGTH_SHORT).show()
-                            navController.navigate("search_children_screen/${email.value}")
+                            navController.navigate(Screens.ParentMainNavScreen.route)
                         }
                         else if (it == false){
                             viewModel.resetLoginStatusParent()
@@ -415,7 +415,7 @@ fun ParentSignInScreen(navController: NavController, viewModel: MainViewModel) {
 }
 
 @Composable
-fun ParentInfoScreen(navController: NavController, viewModel: MainViewModel, email: String, password: String) {
+fun ParentInfoScreen(navController: NavController, viewModel: MainViewModel = koinViewModel(), email: String, password: String) {
     val firstName = remember { mutableStateOf("") }
     val lastName = remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -500,7 +500,7 @@ fun ParentInfoScreen(navController: NavController, viewModel: MainViewModel, ema
                         if(it == true) {
                             viewModel.resetRegStatusParent()
                             Toast.makeText(context, "Successful registration", Toast.LENGTH_SHORT).show()
-                            navController.navigate(Screens.ParentQrScreen.route)
+                            navController.navigate("search_children_screen/${email}")
                         }
                         else if (it == false){
                             viewModel.resetRegStatusParent()
@@ -545,89 +545,6 @@ fun ParentInfoScreen(navController: NavController, viewModel: MainViewModel, ema
             CircularProgressBar(
                 isLoading = viewModel.loadingStatus.value,
                 modifier = Modifier.align(Center)
-            )
-        }
-    }
-}
-
-@Composable
-fun ParentQrScreen(navController: NavController) {
-    Column {
-        Text(
-            text = "Отсканируйте QR код ребенка",
-            style = TextStyle(
-                fontSize = 30.sp,
-                fontWeight = FontWeight(900)
-            ),
-            modifier = Modifier
-                .padding(top = 50.dp, start = 60.dp, end = 60.dp)
-                .fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            color = Black
-        )
-
-        Text(
-            text = "Ребенок уже должен быть зарегистрированным",
-            style = TextStyle(
-                fontSize = 20.sp,
-                fontWeight = FontWeight(700)
-            ),
-            modifier = Modifier
-                .padding(top = 15.dp, start = 45.dp, end = 45.dp)
-                .fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            color = LightBlack
-        )
-
-        IconButton(
-            onClick = {},
-            modifier = Modifier
-                .padding(top = 30.dp)
-                .align(CenterHorizontally)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.qr_code),
-                contentDescription = "qr",
-                modifier = Modifier
-                    .size(260.dp),
-                tint = Color.Unspecified
-            )
-        }
-
-        Button(
-            modifier = Modifier
-                .padding(top = 50.dp)
-                .height(55.dp)
-                .width(260.dp)
-                .fillMaxWidth()
-                .align(CenterHorizontally),
-            shape = RoundedCornerShape(15.dp),
-            colors = ButtonDefaults.buttonColors(Green),
-            onClick = {}
-        ) {
-            Text(
-                text = "Продолжить",
-                style = TextStyle(
-                    fontSize = 19.sp,
-                    fontWeight = FontWeight(700)
-                ),
-                color = Color.White
-            )
-        }
-
-        IconButton(
-            onClick = {
-                      navController.popBackStack()
-            },
-            modifier = Modifier
-                .padding(start = 15.dp, bottom = 15.dp)
-                .fillMaxHeight()
-                .wrapContentHeight(Bottom)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
-                contentDescription = "back",
-                modifier = Modifier.size(35.dp)
             )
         }
     }

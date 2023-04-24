@@ -29,8 +29,11 @@ import androidx.navigation.NavController
 import com.example.detiapplication.R
 import com.example.detiapplication.domain.models.children_models.ChildrenLoginRequestModel
 import com.example.detiapplication.domain.models.children_models.ChildrenRegistrationRequestModel
-import com.example.detiapplication.presentation.MainViewModel
+import com.example.detiapplication.presentation.di.appModule
+import com.example.detiapplication.presentation.viewmodels.MainViewModel
 import com.example.detiapplication.presentation.theme.*
+import org.koin.androidx.compose.koinViewModel
+import org.koin.java.KoinJavaComponent.get
 
 @Composable
 fun CircularProgressBar(isLoading: Boolean, modifier: Modifier) {
@@ -45,7 +48,7 @@ fun CircularProgressBar(isLoading: Boolean, modifier: Modifier) {
 }
 
 @Composable
-fun ChildrenSignInScreen(navController: NavController, viewModel: MainViewModel) {
+fun ChildrenSignInScreen(navController: NavController, viewModel: MainViewModel = koinViewModel()) {
     val context = LocalContext.current
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
     val parentEmail = remember { mutableStateOf("") }
@@ -365,7 +368,7 @@ fun ChidlrenRegistrationScreen(navController: NavController) {
 @Composable
 fun ChildrenInfoScreen(
     navController: NavController,
-    viewModel: MainViewModel,
+    viewModel: MainViewModel = koinViewModel(),
     parentEmail: String,
     password: String
 ) {
@@ -525,85 +528,6 @@ fun ChildrenInfoScreen(
     }
 }
 
-@Composable
-fun ChildrenQrScreen(navController: NavController) {
-    Column {
-        Text(
-            text = "Твой QR-код",
-            style = TextStyle(
-                fontSize = 33.sp,
-                fontWeight = FontWeight(900)
-            ),
-            modifier = Modifier
-                .padding(top = 60.dp, start = 60.dp, end = 60.dp)
-                .fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            color = Black
-        )
-
-        Text(
-            text = "Родитель должен отсканировать его у себя в приложении",
-            style = TextStyle(
-                fontSize = 20.sp,
-                fontWeight = FontWeight(700)
-            ),
-            modifier = Modifier
-                .padding(top = 15.dp, start = 45.dp, end = 45.dp)
-                .fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            color = LightBlack
-        )
-
-        Icon(
-            painter = painterResource(id = R.drawable.qr_code_pic),
-            contentDescription = "qr",
-            modifier = Modifier
-                .size(260.dp)
-                .padding(top = 30.dp)
-                .align(CenterHorizontally),
-            tint = Color.Unspecified
-        )
-
-        Button(
-            modifier = Modifier
-                .padding(top = 50.dp)
-                .height(55.dp)
-                .width(230.dp)
-                .fillMaxWidth()
-                .align(CenterHorizontally),
-            shape = RoundedCornerShape(15.dp),
-            colors = ButtonDefaults.buttonColors(Green),
-            onClick = {}
-        ) {
-            Text(
-                text = "Продолжить",
-                style = TextStyle(
-                    fontSize = 19.sp,
-                    fontWeight = FontWeight(700)
-                ),
-                color = Color.White
-            )
-        }
-
-        IconButton(
-            onClick = {
-                      navController.popBackStack()
-            },
-            modifier = Modifier
-                .padding(start = 15.dp, bottom = 15.dp)
-                .fillMaxHeight()
-                .wrapContentHeight(Bottom)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
-                contentDescription = "back",
-                modifier = Modifier.size(35.dp)
-            )
-        }
-    }
-}
-
-//@Preview (showSystemUi = true)
 @Composable
 fun ChilrenChangePasswordScreen() {
     Column {
