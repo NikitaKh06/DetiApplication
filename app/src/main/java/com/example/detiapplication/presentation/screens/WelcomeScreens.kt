@@ -1,4 +1,4 @@
-package com.example.detiapplication.presentation
+package com.example.detiapplication.presentation.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*

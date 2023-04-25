@@ -38,6 +38,18 @@ fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel 
         mutableStateOf(SearchChidldrenResponseModel("", "", ""))
     }
     val context = LocalContext.current
+    val parentToken = viewModel.getParentToken().token
+
+    viewModel.searchChildren(SearchChidlrenRequestModel(token = parentToken, parent_email = parentEmail))
+    viewModel.searchChildrenStatus.observe(lifecycleOwner) {
+        if(it == true) {
+            responseModel.value = SearchChidldrenResponseModel(
+                first_name = viewModel.responseModel.value?.first_name.toString(),
+                last_name = viewModel.responseModel.value?.last_name.toString(),
+                age = viewModel.responseModel.value?.age.toString()
+            )
+        }
+    }
 
     Surface(color = Green) {
         Column {
@@ -84,7 +96,7 @@ fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel 
                                     Card(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .height(230.dp),
+                                            .height(150.dp),
                                         shape = RoundedCornerShape(40.dp),
                                         border = BorderStroke(1.5.dp, LightBlack)
                                     ) {
@@ -146,43 +158,6 @@ fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel 
                                                     colors = ButtonDefaults.buttonColors(LightOrange),
                                                     onClick = {
                                                         val parentToken = viewModel.getParentToken().token
-                                                        viewModel.searchChildren(SearchChidlrenRequestModel(token = parentToken, parent_email = parentEmail))
-                                                        viewModel.searchChildrenStatus.observe(lifecycleOwner) {
-                                                            if(it == true) {
-                                                                responseModel.value = SearchChidldrenResponseModel(
-                                                                    first_name = viewModel.responseModel.value?.first_name.toString(),
-                                                                    last_name = viewModel.responseModel.value?.last_name.toString(),
-                                                                    age = viewModel.responseModel.value?.age.toString()
-                                                                )
-                                                            }
-                                                        }
-                                                    },
-                                                ) {
-                                                    Text(
-                                                        text = "Найти ребенка",
-                                                        style = TextStyle(
-                                                            fontSize = 19.sp,
-                                                            fontWeight = FontWeight(1000)
-                                                        ),
-                                                        color = Color.DarkGray,
-                                                        modifier = Modifier
-                                                            .wrapContentSize(Center)
-                                                    )
-                                                }
-
-                                                Button(
-                                                    modifier = Modifier
-                                                        .padding(
-                                                            start = 35.dp,
-                                                            end = 35.dp,
-                                                            top = 20.dp
-                                                        )
-                                                        .height(55.dp)
-                                                        .fillMaxWidth(),
-                                                    shape = RoundedCornerShape(15.dp),
-                                                    colors = ButtonDefaults.buttonColors(LightOrange),
-                                                    onClick = {
-                                                        val parentToken = viewModel.getParentToken().token
                                                         viewModel.addChildren(model = AddChildrenModel(token = parentToken))
                                                         viewModel.addChildrenStatus.observe(lifecycleOwner) {
                                                             if(it == true) {
@@ -216,7 +191,8 @@ fun SearchChildrenScreen(navController: NavController, viewModel: MainViewModel 
                                     isLoading = viewModel.loadingStatus.value,
                                     modifier = Modifier
                                         .fillMaxSize()
-                                        .wrapContentSize(Center)
+                                        .wrapContentSize(Center),
+                                    color = Color.White
                                 )
                             }
                         }
@@ -325,7 +301,7 @@ fun ParentSignInScreen(navController: NavController, viewModel: MainViewModel = 
                         if(it == true) {
                             viewModel.resetLoginStatusParent()
                             Toast.makeText(context, "Successful login", Toast.LENGTH_SHORT).show()
-                            navController.navigate(Screens.ParentMainNavScreen.route)
+                            navController.navigate(Screens.SearchChildrenScreen.route)
                         }
                         else if (it == false){
                             viewModel.resetLoginStatusParent()

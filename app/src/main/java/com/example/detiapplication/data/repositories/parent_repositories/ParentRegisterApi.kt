@@ -6,7 +6,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.POST
-import javax.net.ssl.SSLEngineResult.Status
 
 interface ParentRegisterApi {
     @POST("parent/register")
@@ -23,7 +22,7 @@ interface ParentRegisterApi {
 
     companion object {
 
-        var BASE_URL = "https://deti-backend-server.onrender.com/"
+        private var BASE_URL = "https://deti-backend-server.onrender.com/"
 
         fun create() : ParentRegisterApi {
 

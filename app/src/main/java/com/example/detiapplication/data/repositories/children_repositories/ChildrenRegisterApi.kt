@@ -19,7 +19,7 @@ interface ChildrenRegisterApi {
 
     companion object {
 
-        var BASE_URL = "https://deti-backend-server.onrender.com/"
+        private var BASE_URL = "https://deti-backend-server.onrender.com/"
 
         fun create() : ChildrenRegisterApi {
 

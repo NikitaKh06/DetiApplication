@@ -29,23 +29,9 @@ import androidx.navigation.NavController
 import com.example.detiapplication.R
 import com.example.detiapplication.domain.models.children_models.ChildrenLoginRequestModel
 import com.example.detiapplication.domain.models.children_models.ChildrenRegistrationRequestModel
-import com.example.detiapplication.presentation.di.appModule
 import com.example.detiapplication.presentation.viewmodels.MainViewModel
 import com.example.detiapplication.presentation.theme.*
 import org.koin.androidx.compose.koinViewModel
-import org.koin.java.KoinJavaComponent.get
-
-@Composable
-fun CircularProgressBar(isLoading: Boolean, modifier: Modifier) {
-    if(isLoading) {
-        Box(modifier = modifier) {
-            CircularProgressIndicator(
-                color = Color.Gray,
-                modifier = Modifier.size(25.dp)
-            )
-        }
-    }
-}
 
 @Composable
 fun ChildrenSignInScreen(navController: NavController, viewModel: MainViewModel = koinViewModel()) {

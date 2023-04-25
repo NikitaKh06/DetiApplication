@@ -9,7 +9,6 @@ import androidx.navigation.navArgument
 import com.example.detiapplication.presentation.screens.*
 import com.example.detiapplication.presentation.screens.bottom_navigation_children.*
 import com.example.detiapplication.presentation.screens.bottom_navigation_parent.ParentMainNavScreen
-import com.example.detiapplication.presentation.viewmodels.MainViewModel
 
 @Composable
 fun SetupNavGraph(navController: NavHostController) {

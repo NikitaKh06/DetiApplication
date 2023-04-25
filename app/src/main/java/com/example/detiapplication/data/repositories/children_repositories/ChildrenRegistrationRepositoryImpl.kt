@@ -1,9 +1,22 @@
 package com.example.detiapplication.data.repositories.children_repositories
 
-class ChildrenRegistrationRepository {
+import android.content.Context
+import com.example.detiapplication.data.models.children_models.GetChildrenToken
+import com.example.detiapplication.data.models.children_models.SaveChildrenToken
 
-    fun loginChildren() {}
+private const val SHARED_PREFS_NAME = "shared_prefs_name"
+private const val KEY_CHILDREN_TOKEN = "children_token"
 
-    fun registerChildren() {}
+class ChildrenRegistrationRepository(context: Context) {
 
+    private val sharedPreferences = context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)
+
+    fun saveToken(model: SaveChildrenToken) {
+        sharedPreferences.edit().putString(KEY_CHILDREN_TOKEN, model.token).apply()
+    }
+
+    fun getToken() : GetChildrenToken {
+        val token = sharedPreferences.getString(KEY_CHILDREN_TOKEN, "")
+        return GetChildrenToken(token = token.toString())
+    }
 }

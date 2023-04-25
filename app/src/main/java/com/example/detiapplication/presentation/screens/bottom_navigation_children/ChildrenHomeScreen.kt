@@ -1,21 +1,45 @@
 package com.example.detiapplication.presentation.screens.bottom_navigation_children
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
+import com.example.detiapplication.presentation.home_models.ReadListOfSubjectsReceiveModel
+import com.example.detiapplication.presentation.home_models.ReadListOfSubjectsRequestModel
+import com.example.detiapplication.presentation.screens.CircularProgressBar
 import com.example.detiapplication.presentation.theme.*
+import com.example.detiapplication.presentation.viewmodels.HomeViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ChildrenHomeScreen(navController: NavController, bottomPaddingValues: PaddingValues) {
+fun ChildrenHomeScreen(navController: NavController, bottomPaddingValues: PaddingValues, viewModel: HomeViewModel = koinViewModel()) {
+    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+    val childrenToken = viewModel.getChildrenToken().token
+    var listOfSubjects = listOf<ReadListOfSubjectsReceiveModel>()
+
+    viewModel.readListOfSubjectsFromChildren(
+        ReadListOfSubjectsRequestModel(
+            token = childrenToken,
+            day = "Sunday"
+        )
+    )
+
+    viewModel.listOfSubjects.observe(lifecycleOwner) {
+        listOfSubjects = viewModel.listOfSubjects.value!!
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -40,12 +64,18 @@ fun ChildrenHomeScreen(navController: NavController, bottomPaddingValues: Paddin
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                     )
-
-                    SubjectElement()
-                    SubjectElement()
-                    SubjectElement()
-                    SubjectElement()
-                    SubjectElement()
+                    CircularProgressBar(
+                        isLoading = viewModel.loadingStatus.value,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .wrapContentSize(Alignment.Center),
+                        color = Color.White
+                    )
+                    LazyColumn() {
+                        items(listOfSubjects) { model ->
+                            SubjectElement(model = model)
+                        }
+                    }
                 }
             }
         }
@@ -122,7 +152,7 @@ fun ChildrenHomeScreen(navController: NavController, bottomPaddingValues: Paddin
             shape = RoundedCornerShape(20.dp),
             colors = ButtonDefaults.buttonColors(GreenSomeLight),
             onClick = {
-                /*TODO*/
+
             }
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -162,7 +192,7 @@ fun ChildrenHomeScreen(navController: NavController, bottomPaddingValues: Paddin
 }
 
 @Composable
-fun SubjectElement() {
+fun SubjectElement(model: ReadListOfSubjectsReceiveModel) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -173,13 +203,13 @@ fun SubjectElement() {
         Surface(color = GreenMoreDark) {
             Column {
                 Text(
-                    text = "Математика",
+                    text = model.title,
                     style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight(800)),
                     color = Color.White,
                     modifier = Modifier.padding(start = 20.dp)
                 )
                 Text(
-                    text = "14:30 - 15:30",
+                    text = "${model.hours}:${model.minutes} - 00:00",
                     style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight(800)),
                     color = CustomWhite,
                     modifier = Modifier.padding(start = 22.dp)

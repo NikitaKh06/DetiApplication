@@ -4,9 +4,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.detiapplication.data.models.children_models.GetChildrenToken
+import com.example.detiapplication.data.models.children_models.SaveChildrenToken
 import com.example.detiapplication.data.models.parent_models.GetParentToken
 import com.example.detiapplication.data.models.parent_models.SaveParentToken
 import com.example.detiapplication.data.repositories.children_repositories.ChildrenRegisterApi
+import com.example.detiapplication.data.repositories.children_repositories.ChildrenRegistrationRepository
 import com.example.detiapplication.data.repositories.parent_repositories.ParentRegisterApi
 import com.example.detiapplication.data.repositories.parent_repositories.ParentRegistrationRepository
 import com.example.detiapplication.domain.models.children_models.ChildrenLoginRequestModel
@@ -14,7 +17,10 @@ import com.example.detiapplication.domain.models.children_models.ChildrenRegistr
 import com.example.detiapplication.domain.models.parent_models.*
 import kotlinx.coroutines.launch
 
-class MainViewModel(private val parentRegistrationRepository: ParentRegistrationRepository) : ViewModel() {
+class MainViewModel(
+    private val parentRegistrationRepository: ParentRegistrationRepository,
+    private val childrenRegistrationRepository: ChildrenRegistrationRepository
+) : ViewModel() {
     var childrenRegistrationStatus = MutableLiveData<Boolean?>(null)
     var childrenLoginStatus = MutableLiveData<Boolean?>(null)
     var parentRegistrationStatus = MutableLiveData<Boolean?>(null)
@@ -31,6 +37,11 @@ class MainViewModel(private val parentRegistrationRepository: ParentRegistration
         viewModelScope.launch {
             try {
                 val response = request.registerChildren(model)
+                if(response.body()?.token?.isNotEmpty() == true) {
+                    childrenRegistrationRepository.saveToken(
+                        SaveChildrenToken(token = response.body()?.token!!)
+                    )
+                }
                 childrenRegistrationStatus.value = response.body()?.token?.isNotEmpty() == true
                 loadingStatus.value = false
             } catch (_: Exception) {  }
@@ -48,6 +59,11 @@ class MainViewModel(private val parentRegistrationRepository: ParentRegistration
         viewModelScope.launch {
             try {
                 val response = request.loginChildren(model)
+                if(response.body()?.token?.isNotEmpty() == true) {
+                    childrenRegistrationRepository.saveToken(
+                        SaveChildrenToken(token = response.body()?.token!!)
+                    )
+                }
                 childrenLoginStatus.value = response.body()?.token?.isNotEmpty() == true
                 loadingStatus.value = false
             } catch (_: Exception) {  }
@@ -103,6 +119,14 @@ class MainViewModel(private val parentRegistrationRepository: ParentRegistration
 
     fun getParentToken() : GetParentToken {
         return parentRegistrationRepository.getToken()
+    }
+
+    fun saveChildrenToken(model: SaveChildrenToken) {
+        return childrenRegistrationRepository.saveToken(model = model)
+    }
+
+    fun getChildrenToken() : GetChildrenToken {
+        return childrenRegistrationRepository.getToken()
     }
 
     fun searchChildren(model: SearchChidlrenRequestModel){
