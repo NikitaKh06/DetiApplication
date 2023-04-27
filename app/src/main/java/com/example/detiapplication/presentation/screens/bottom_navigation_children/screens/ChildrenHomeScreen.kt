@@ -1,5 +1,6 @@
-package com.example.detiapplication.presentation.screens.bottom_navigation_children
+package com.example.detiapplication.presentation.screens.bottom_navigation_children.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -22,6 +23,7 @@ import com.example.detiapplication.presentation.screens.CircularProgressBar
 import com.example.detiapplication.presentation.theme.*
 import com.example.detiapplication.presentation.viewmodels.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
+
 
 @Composable
 fun ChildrenHomeScreen(navController: NavController, bottomPaddingValues: PaddingValues, viewModel: HomeViewModel = koinViewModel()) {
@@ -73,7 +75,7 @@ fun ChildrenHomeScreen(navController: NavController, bottomPaddingValues: Paddin
                     )
                     LazyColumn() {
                         items(listOfSubjects) { model ->
-                            SubjectElement(model = model)
+                            SubjectElement(model = model, navController = navController)
                         }
                     }
                 }
@@ -192,13 +194,17 @@ fun ChildrenHomeScreen(navController: NavController, bottomPaddingValues: Paddin
 }
 
 @Composable
-fun SubjectElement(model: ReadListOfSubjectsReceiveModel) {
+fun SubjectElement(viewModel: HomeViewModel = koinViewModel(), model: ReadListOfSubjectsReceiveModel, navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(70.dp)
-            .padding(start = 20.dp, end = 20.dp, top = 10.dp),
-        shape = RoundedCornerShape(10.dp)
+            .padding(start = 20.dp, end = 20.dp, top = 10.dp)
+            .clickable {
+                navController.navigate(route = "children_homework_screen/${model.id}/${model.title}")
+            },
+        shape = RoundedCornerShape(10.dp),
+
     ) {
         Surface(color = GreenMoreDark) {
             Column {

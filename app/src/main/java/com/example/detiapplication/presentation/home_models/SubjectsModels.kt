@@ -12,3 +12,17 @@ data class ReadListOfSubjectsReceiveModel(
     val hours: String,
     val minutes: String
 )
+
+data class ReadFullSubjectRequestModel(
+    val subject_id: String
+)
+
+data class ReadFullSubjectReceiveModel(
+    val id: String,
+    val title: String,
+    val day: String,
+    val hours: String,
+    val minutes: String,
+    val comment: String,
+    val homework: String
+)

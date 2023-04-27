@@ -7,3 +7,8 @@ data class SaveChildrenToken(
 data class GetChildrenToken(
     val token: String
 )
+
+data class InfoChildrenModel(
+    val name: String,
+    val last_name: String
+)

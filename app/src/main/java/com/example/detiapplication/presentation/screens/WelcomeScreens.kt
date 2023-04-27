@@ -14,10 +14,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.detiapplication.R
-import com.example.detiapplication.presentation.screens.Screens
 import com.example.detiapplication.presentation.theme.Black
 
-//@Preview (showSystemUi = true)
 @Composable
 fun SelectionScreen(navController: NavController) {
     Column {
