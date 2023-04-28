@@ -16,6 +16,9 @@ interface SubjectsApi {
     @POST("read/full_subject")
     suspend fun readFullSubject(@Body request: ReadFullSubjectRequestModel) : Response<ReadFullSubjectReceiveModel>
 
+    @POST("subject/add_homework")
+    suspend fun addHomework(@Body request: AddHomeworkRequestModel)
+
     companion object {
 
         private var BASE_URL = "https://deti-backend-server.onrender.com/"

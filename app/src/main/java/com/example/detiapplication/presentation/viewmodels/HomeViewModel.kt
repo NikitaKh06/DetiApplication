@@ -65,4 +65,14 @@ class HomeViewModel(
         }
     }
 
+    fun addHomework(model: AddHomeworkRequestModel) {
+        val request = SubjectsApi.create()
+        loadingStatus.value = true
+        viewModelScope.launch {
+            try {
+                val response = request.addHomework(model)
+            } catch (_: Exception) {  }
+            loadingStatus.value = false
+        }
+    }
 }

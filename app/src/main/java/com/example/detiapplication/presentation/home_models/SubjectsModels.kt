@@ -26,3 +26,8 @@ data class ReadFullSubjectReceiveModel(
     val comment: String,
     val homework: String
 )
+
+data class AddHomeworkRequestModel(
+    val subject_id: String,
+    val text: String
+)

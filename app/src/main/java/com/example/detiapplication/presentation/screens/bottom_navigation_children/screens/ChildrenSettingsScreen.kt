@@ -1,4 +1,4 @@
-package com.example.detiapplication.presentation.screens.bottom_navigation_children
+package com.example.detiapplication.presentation.screens.bottom_navigation_children.screens
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentWidth

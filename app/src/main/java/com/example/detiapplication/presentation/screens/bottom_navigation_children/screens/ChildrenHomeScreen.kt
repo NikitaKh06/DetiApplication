@@ -85,12 +85,12 @@ fun ChildrenHomeScreen(navController: NavController, bottomPaddingValues: Paddin
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 17.dp),
+                .padding(top = 17.dp, start = 29.dp, end = 29.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Card(
                 modifier = Modifier
-                    .width(130.dp)
+                    .width(120.dp)
                     .height(80.dp),
                 shape = RoundedCornerShape(20.dp)
             ) {
@@ -126,7 +126,7 @@ fun ChildrenHomeScreen(navController: NavController, bottomPaddingValues: Paddin
 
             Card(
                 modifier = Modifier
-                    .width(180.dp)
+                    .width(170.dp)
                     .height(80.dp),
                 shape = RoundedCornerShape(20.dp)
             ) {
@@ -194,7 +194,7 @@ fun ChildrenHomeScreen(navController: NavController, bottomPaddingValues: Paddin
 }
 
 @Composable
-fun SubjectElement(viewModel: HomeViewModel = koinViewModel(), model: ReadListOfSubjectsReceiveModel, navController: NavController) {
+fun SubjectElement(model: ReadListOfSubjectsReceiveModel, navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()

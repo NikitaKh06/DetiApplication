@@ -45,7 +45,8 @@ fun BottomNavGraphChildren(navController: NavHostController, paddingValues: Padd
         ) {
             ChildrenHomeworkScreen(
                 id =  it.arguments?.getString("subject_id").toString(),
-                title =  it.arguments?.getString("title").toString()
+                title =  it.arguments?.getString("title").toString(),
+                paddingValues = paddingValues
             )
         }
     }
