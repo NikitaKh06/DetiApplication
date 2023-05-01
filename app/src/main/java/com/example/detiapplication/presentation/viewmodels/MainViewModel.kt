@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.detiapplication.data.models.children_models.GetChildrenToken
+import com.example.detiapplication.data.models.children_models.LogInStatusModel
 import com.example.detiapplication.data.models.children_models.SaveChildrenToken
 import com.example.detiapplication.data.models.parent_models.GetParentToken
 import com.example.detiapplication.data.models.parent_models.SaveParentToken
@@ -41,6 +42,12 @@ class MainViewModel(
                     childrenRegistrationRepository.saveToken(
                         SaveChildrenToken(token = response.body()?.token!!)
                     )
+                    childrenRegistrationRepository.saveLogInStatus(
+                        LogInStatusModel(
+                            isLogIn = true,
+                            type = "Children"
+                        )
+                    )
                 }
                 childrenRegistrationStatus.value = response.body()?.token?.isNotEmpty() == true
                 loadingStatus.value = false
@@ -62,6 +69,12 @@ class MainViewModel(
                 if(response.body()?.token?.isNotEmpty() == true) {
                     childrenRegistrationRepository.saveToken(
                         SaveChildrenToken(token = response.body()?.token!!)
+                    )
+                    childrenRegistrationRepository.saveLogInStatus(
+                        LogInStatusModel(
+                            isLogIn = true,
+                            type = "Children"
+                        )
                     )
                 }
                 childrenLoginStatus.value = response.body()?.token?.isNotEmpty() == true
@@ -85,6 +98,12 @@ class MainViewModel(
                     parentRegistrationRepository.saveToken(
                         SaveParentToken(token = response.body()?.token!!)
                     )
+                    childrenRegistrationRepository.saveLogInStatus(
+                        LogInStatusModel(
+                            isLogIn = true,
+                            type = "Parent"
+                        )
+                    )
                 }
                 parentRegistrationStatus.value = response.body()?.token?.isNotEmpty() == true
                 loadingStatus.value = false
@@ -105,6 +124,12 @@ class MainViewModel(
                 if(response.body()?.token?.isNotEmpty() == true) {
                     parentRegistrationRepository.saveToken(
                         SaveParentToken(token = response.body()?.token!!)
+                    )
+                    childrenRegistrationRepository.saveLogInStatus(
+                        LogInStatusModel(
+                            isLogIn = true,
+                            type = "Parent"
+                        )
                     )
                 }
                 parentLoginStatus.value = response.body()?.token?.isNotEmpty() == true

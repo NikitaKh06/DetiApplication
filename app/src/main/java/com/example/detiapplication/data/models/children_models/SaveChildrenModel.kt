@@ -12,3 +12,8 @@ data class InfoChildrenModel(
     val name: String,
     val last_name: String
 )
+
+data class LogInStatusModel(
+    val isLogIn: Boolean,
+    val type: String
+)

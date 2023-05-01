@@ -1,5 +1,7 @@
 package com.example.detiapplication.presentation.screens.bottom_navigation_children.screens
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -30,6 +33,7 @@ fun ChildrenHomeScreen(navController: NavController, bottomPaddingValues: Paddin
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
     val childrenToken = viewModel.getChildrenToken().token
     var listOfSubjects = listOf<ReadListOfSubjectsReceiveModel>()
+    val context = LocalContext.current
 
     viewModel.readListOfSubjectsFromChildren(
         ReadListOfSubjectsRequestModel(
@@ -73,7 +77,7 @@ fun ChildrenHomeScreen(navController: NavController, bottomPaddingValues: Paddin
                             .wrapContentSize(Alignment.Center),
                         color = Color.White
                     )
-                    LazyColumn() {
+                    LazyColumn {
                         items(listOfSubjects) { model ->
                             SubjectElement(model = model, navController = navController)
                         }
@@ -85,13 +89,14 @@ fun ChildrenHomeScreen(navController: NavController, bottomPaddingValues: Paddin
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 17.dp, start = 29.dp, end = 29.dp),
+                .padding(top = 35.dp, start = 29.dp, end = 29.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Card(
                 modifier = Modifier
                     .width(120.dp)
-                    .height(80.dp),
+                    .height(80.dp)
+                    .padding(end = 10.dp),
                 shape = RoundedCornerShape(20.dp)
             ) {
                 Surface(
@@ -149,37 +154,16 @@ fun ChildrenHomeScreen(navController: NavController, bottomPaddingValues: Paddin
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 30.dp, end = 30.dp, top = 17.dp)
-                .height(80.dp),
-            shape = RoundedCornerShape(20.dp),
-            colors = ButtonDefaults.buttonColors(GreenSomeLight),
-            onClick = {
-
-            }
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = "Добавить",
-                    style = TextStyle(fontSize = 23.sp, fontWeight = FontWeight(800)),
-                    color = Color.White
-                )
-                Text(
-                    text = "домашнее задание",
-                    style = TextStyle(fontSize = 23.sp, fontWeight = FontWeight(800)),
-                    color = Color.White
-                )
-            }
-        }
-
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 85.dp, end = 85.dp, top = 17.dp)
+                .padding(start = 85.dp, end = 85.dp, top = 25.dp)
                 .height(70.dp),
             shape = RoundedCornerShape(40.dp),
             colors = ButtonDefaults.buttonColors(Red),
             onClick = {
-                /*TODO*/
+                val number = Uri.parse("tel:" + "112")
+                val i = Intent(Intent.ACTION_DIAL, number)
+                try {
+                    context.startActivity(i)
+                } catch (_: SecurityException) { }
             }
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {

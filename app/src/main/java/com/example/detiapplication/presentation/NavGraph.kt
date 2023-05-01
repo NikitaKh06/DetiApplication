@@ -11,11 +11,15 @@ import com.example.detiapplication.presentation.screens.bottom_navigation_childr
 import com.example.detiapplication.presentation.screens.bottom_navigation_parent.ParentMainNavScreen
 
 @Composable
-fun SetupNavGraph(navController: NavHostController) {
+fun SetupNavGraph(navController: NavHostController, logInStatus: Boolean, logInType: String) {
 
     NavHost(
         navController = navController,
-        startDestination = Screens.SelectionScreen.route
+        startDestination =
+        if(!logInStatus) Screens.SelectionScreen.route
+        else
+            if(logInType == "Children") Screens.ChildrenMainNavScreen.route
+            else Screens.ParentMainNavScreen.route
     ) {
 
         composable(

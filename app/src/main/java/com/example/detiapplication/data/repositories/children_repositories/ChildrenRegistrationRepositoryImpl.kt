@@ -1,14 +1,12 @@
 package com.example.detiapplication.data.repositories.children_repositories
 
 import android.content.Context
-import com.example.detiapplication.data.models.children_models.GetChildrenToken
-import com.example.detiapplication.data.models.children_models.InfoChildrenModel
-import com.example.detiapplication.data.models.children_models.SaveChildrenToken
+import com.example.detiapplication.data.models.children_models.*
 
 private const val SHARED_PREFS_NAME = "shared_prefs_name"
 private const val KEY_CHILDREN_TOKEN = "children_token"
-private const val KEY_NAME_TOKEN = "children_name"
-private const val KEY_LASTNAME_TOKEN = "children_last_name"
+private const val KEY_LOG_IN = "children_log_in"
+private const val KEY_TYPE = "type"
 
 class ChildrenRegistrationRepository(context: Context) {
 
@@ -23,16 +21,18 @@ class ChildrenRegistrationRepository(context: Context) {
         return GetChildrenToken(token = token.toString())
     }
 
-    fun saveInfoChildren(model: InfoChildrenModel) {
-        sharedPreferences.edit().putString(KEY_NAME_TOKEN, model.name).apply()
-        sharedPreferences.edit().putString(KEY_LASTNAME_TOKEN, model.last_name).apply()
+    fun saveLogInStatus(model: LogInStatusModel) {
+        sharedPreferences.edit().putBoolean(KEY_LOG_IN, model.isLogIn).apply()
+        sharedPreferences.edit().putString(KEY_TYPE, model.type).apply()
     }
 
-    fun getInfoChildren(): InfoChildrenModel {
-        return InfoChildrenModel(
-            name = sharedPreferences.getString(KEY_NAME_TOKEN, "")!!,
-            last_name = sharedPreferences.getString(KEY_LASTNAME_TOKEN, "")!!
-        )
+    fun checkLogInStatus() : LogInStatusModel{
+        val isLogIn = sharedPreferences.getBoolean(KEY_LOG_IN, false)
+        val type = sharedPreferences.getString(KEY_TYPE, "")
+        return LogInStatusModel(isLogIn = isLogIn, type = type!!)
     }
 
+    fun clearLogInStatus() {
+        sharedPreferences.edit().putBoolean(KEY_LOG_IN, false).apply()
+    }
 }

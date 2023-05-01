@@ -17,7 +17,9 @@ fun BottomNavGraphChildren(navController: NavHostController, paddingValues: Padd
         composable(
             route = BottomBarScreensChildren.ProfileScreen.route
         ) {
-            ChildrenProfileScreen(navController = navController, paddingValues = paddingValues)
+            ChildrenProfileScreen(
+                paddingValues = paddingValues
+            )
         }
 
         composable(

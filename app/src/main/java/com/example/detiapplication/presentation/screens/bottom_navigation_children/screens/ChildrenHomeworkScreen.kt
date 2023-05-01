@@ -34,6 +34,9 @@ fun ChildrenHomeworkScreen(id: String, title: String, viewModel: HomeViewModel =
     val subject = remember {
         mutableStateOf("")
     }
+    val homework = remember {
+        mutableStateOf("")
+    }
     val addHomeWorkDialogState  = remember { mutableStateOf(false) }
 
     if(addHomeWorkDialogState.value) {
@@ -49,6 +52,7 @@ fun ChildrenHomeworkScreen(id: String, title: String, viewModel: HomeViewModel =
     }
     viewModel.fullSubject.observe(lifecycleOwner) {
         subject.value = viewModel.fullSubject.value!!.comment
+        homework.value = viewModel.fullSubject.value!!.homework
     }
 
     Column(modifier = Modifier
@@ -72,13 +76,38 @@ fun ChildrenHomeworkScreen(id: String, title: String, viewModel: HomeViewModel =
 
         Card(modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 30.dp, end = 30.dp)
-            .height(70.dp),
+            .padding(start = 30.dp, end = 30.dp, top = 5.dp)
+            .height(60.dp),
             border = BorderStroke(2.dp, Black),
             shape = RoundedCornerShape(20.dp)
         ) {
             Text(
                 text = subject.value,
+                style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight(600)),
+                color = LightBlack,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .wrapContentHeight(CenterVertically)
+                    .padding(start = 15.dp)
+            )
+        }
+
+        Text(
+            text = "Домашнее задание",
+            style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight(800)),
+            color = LightBlack,
+            modifier = Modifier.padding(start = 30.dp, top = 20.dp)
+        )
+
+        Card(modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 30.dp, end = 30.dp, top = 5.dp)
+            .height(60.dp),
+            border = BorderStroke(2.dp, Black),
+            shape = RoundedCornerShape(20.dp)
+        ) {
+            Text(
+                text = homework.value,
                 style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight(600)),
                 color = LightBlack,
                 modifier = Modifier
@@ -96,8 +125,8 @@ fun ChildrenHomeworkScreen(id: String, title: String, viewModel: HomeViewModel =
         )
         Card(modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 30.dp, end = 30.dp)
-            .height(200.dp),
+            .padding(start = 30.dp, end = 30.dp, top = 5.dp)
+            .height(100.dp),
             shape = RoundedCornerShape(20.dp)
         ) {
             Surface(color = GreenSomeLight) {
@@ -113,7 +142,8 @@ fun ChildrenHomeworkScreen(id: String, title: String, viewModel: HomeViewModel =
                 onClick = { /*TODO*/ },
                 modifier = Modifier
                     .width(150.dp)
-                    .height(60.dp),
+                    .height(60.dp)
+                    .padding(end = 15.dp),
                 colors = ButtonDefaults.buttonColors(LightOrange),
                 shape = RoundedCornerShape(15.dp)
             ) {
