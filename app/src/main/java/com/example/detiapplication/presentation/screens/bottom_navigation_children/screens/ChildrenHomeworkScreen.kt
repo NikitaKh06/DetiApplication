@@ -193,6 +193,7 @@ fun ChildrenHomeworkScreen(id: String, title: String, viewModel: HomeViewModel =
                 )
             }
         }
+
         CircularProgressBar(
             isLoading = viewModel.loadingStatus.value,
             modifier = Modifier

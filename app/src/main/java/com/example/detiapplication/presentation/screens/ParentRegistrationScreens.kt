@@ -301,7 +301,7 @@ fun ParentSignInScreen(navController: NavController, viewModel: MainViewModel = 
                         if(it == true) {
                             viewModel.resetLoginStatusParent()
                             Toast.makeText(context, "Successful login", Toast.LENGTH_SHORT).show()
-                            navController.navigate(Screens.SearchChildrenScreen.route)
+                            navController.navigate(Screens.ParentMainNavScreen.route)
                         }
                         else if (it == false){
                             viewModel.resetLoginStatusParent()

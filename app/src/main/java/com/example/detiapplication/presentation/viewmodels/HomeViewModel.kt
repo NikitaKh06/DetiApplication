@@ -10,7 +10,7 @@ import com.example.detiapplication.data.models.children_models.ReadChildrenProfi
 import com.example.detiapplication.data.models.parent_models.GetParentToken
 import com.example.detiapplication.data.repositories.children_repositories.ChildrenReadApi
 import com.example.detiapplication.data.repositories.children_repositories.ChildrenRegistrationRepository
-import com.example.detiapplication.data.repositories.parent_repositories.ParentRegistrationRepository
+import com.example.detiapplication.data.repositories.parent_repositories.*
 import com.example.detiapplication.presentation.home_models.*
 import kotlinx.coroutines.launch
 
@@ -23,6 +23,8 @@ class HomeViewModel(
     var listOfSubjects = MutableLiveData<List<ReadListOfSubjectsReceiveModel>>()
     var fullSubject = MutableLiveData<ReadFullSubjectReceiveModel>()
     var childrenProfile = MutableLiveData<ReadChildrenProfileResponseModel>()
+    var parentProfile = MutableLiveData<ReadParentProfileResponseModel>()
+    var childrenProfileFromParent = MutableLiveData<ReadChildrenProfileFromParentResponseModel>()
 
     fun getParentToken() : GetParentToken {
         return parentRegistrationRepository.getToken()
@@ -38,6 +40,18 @@ class HomeViewModel(
         viewModelScope.launch {
             try {
                 val response = request.readListOfSubjectsFromChildren(model)
+                listOfSubjects.value = response.body()
+                loadingStatus.value = false
+            } catch (_: Exception) {  }
+        }
+    }
+
+    fun readListOfSubjectsFromParent(model: ReadListOfSubjectsRequestModel) {
+        val request = SubjectsApi.create()
+        loadingStatus.value = true
+        viewModelScope.launch {
+            try {
+                val response = request.readListOfSubjectsFromParent(model)
                 listOfSubjects.value = response.body()
                 loadingStatus.value = false
             } catch (_: Exception) {  }
@@ -87,6 +101,32 @@ class HomeViewModel(
             try {
                 val response = request.readChildrenProfile(model)
                 childrenProfile.value = response.body()
+                loadingStatus.value = false
+            } catch (_: Exception) {  }
+        }
+    }
+
+    fun readParentProfile(model: ReadParentProfileRequestModel) {
+        val request = ParentReadApi.create()
+        loadingStatus.value = true
+        viewModelScope.launch {
+            try {
+                val response = request.readParentProfile(model)
+                parentProfile.value = response.body()
+                loadingStatus.value = false
+            } catch (_: Exception) {  }
+        }
+    }
+
+    fun readChildrenProfileFromParent(model: ReadChildrenProfileFromParentRequestModel) {
+        val request = ParentReadApi.create()
+        loadingStatus.value = true
+        viewModelScope.launch {
+            try {
+                val response = request.readChildrenProfileFromParent(model)
+                if(response.body() != null) {
+                    childrenProfileFromParent.value = response.body()
+                }
                 loadingStatus.value = false
             } catch (_: Exception) {  }
         }

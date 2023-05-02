@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.detiapplication.presentation.screens.HomeScreens
 import com.example.detiapplication.presentation.screens.bottom_navigation_children.screens.ChildrenHomeScreen
 import com.example.detiapplication.presentation.screens.bottom_navigation_children.screens.ChildrenHomeworkScreen
 import com.example.detiapplication.presentation.screens.bottom_navigation_children.screens.ChildrenSettingsScreen

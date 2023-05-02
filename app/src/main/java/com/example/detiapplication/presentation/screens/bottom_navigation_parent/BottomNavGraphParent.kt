@@ -5,6 +5,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.detiapplication.presentation.screens.HomeScreens
+import com.example.detiapplication.presentation.screens.bottom_navigation_parent.screens.ChildrenProfileFromParentScreen
+import com.example.detiapplication.presentation.screens.bottom_navigation_parent.screens.ParentHomeScreen
+import com.example.detiapplication.presentation.screens.bottom_navigation_parent.screens.ParentProfileScreen
 
 @Composable
 fun BottomNavGraphParent(navController: NavHostController, paddingValues: PaddingValues) {
@@ -12,7 +16,7 @@ fun BottomNavGraphParent(navController: NavHostController, paddingValues: Paddin
         composable(
             route = BottomBarScreensParent.ParentProfileScreen.route
         ) {
-            ParentProfileScreen()
+            ParentProfileScreen(paddingValues = paddingValues)
         }
 
         composable(
@@ -24,7 +28,13 @@ fun BottomNavGraphParent(navController: NavHostController, paddingValues: Paddin
         composable(
             route = BottomBarScreensParent.ParentHomeScreen.route
         ) {
-            ParentHomeScreen()
+            ParentHomeScreen(navController = navController, bottomPaddingValues = paddingValues)
+        }
+
+        composable(
+            route = HomeScreens.ChildrenProfileFromParent.route
+        ) {
+            ChildrenProfileFromParentScreen()
         }
     }
 }
