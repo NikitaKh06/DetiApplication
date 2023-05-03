@@ -3,10 +3,13 @@ package com.example.detiapplication.presentation.screens.bottom_navigation_paren
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.detiapplication.presentation.screens.HomeScreens
 import com.example.detiapplication.presentation.screens.bottom_navigation_parent.screens.ChildrenProfileFromParentScreen
+import com.example.detiapplication.presentation.screens.bottom_navigation_parent.screens.ParenHomeworkScreen
 import com.example.detiapplication.presentation.screens.bottom_navigation_parent.screens.ParentHomeScreen
 import com.example.detiapplication.presentation.screens.bottom_navigation_parent.screens.ParentProfileScreen
 
@@ -35,6 +38,24 @@ fun BottomNavGraphParent(navController: NavHostController, paddingValues: Paddin
             route = HomeScreens.ChildrenProfileFromParent.route
         ) {
             ChildrenProfileFromParentScreen()
+        }
+
+        composable(
+            route = HomeScreens.ParentHomeworkScreen.route,
+            arguments = listOf(
+                navArgument(name = "subject_id") {
+                    type = NavType.StringType
+                } ,
+                navArgument(name = "title") {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            ParenHomeworkScreen(
+                id =  it.arguments?.getString("subject_id").toString(),
+                title =  it.arguments?.getString("title").toString(),
+                paddingValues = paddingValues
+            )
         }
     }
 }

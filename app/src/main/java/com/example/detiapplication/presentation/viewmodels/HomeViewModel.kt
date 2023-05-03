@@ -1,5 +1,6 @@
 package com.example.detiapplication.presentation.viewmodels
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -63,6 +64,7 @@ class HomeViewModel(
         loadingStatus.value = true
         viewModelScope.launch {
             try {
+                Log.d("MyLog", "Start request")
                 val response = request.readFullSubject(model)
                 if(response.body()?.comment?.isEmpty() == true) {
                     fullSubject.value = ReadFullSubjectReceiveModel(
@@ -89,6 +91,17 @@ class HomeViewModel(
         viewModelScope.launch {
             try {
                 val response = request.addHomework(model)
+            } catch (_: Exception) {  }
+            loadingStatus.value = false
+        }
+    }
+
+    fun addComment(model: AddCommentRequestModel) {
+        val request = SubjectsApi.create()
+        loadingStatus.value = true
+        viewModelScope.launch {
+            try {
+                val response = request.addComment(model)
             } catch (_: Exception) {  }
             loadingStatus.value = false
         }

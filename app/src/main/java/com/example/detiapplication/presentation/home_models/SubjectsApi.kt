@@ -19,6 +19,9 @@ interface SubjectsApi {
     @POST("subject/add_homework")
     suspend fun addHomework(@Body request: AddHomeworkRequestModel)
 
+    @POST("subject/add_comment")
+    suspend fun addComment(@Body request: AddCommentRequestModel)
+
     companion object {
 
         private var BASE_URL = "https://deti-backend-server.onrender.com/"

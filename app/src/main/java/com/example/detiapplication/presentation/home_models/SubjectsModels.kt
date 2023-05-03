@@ -31,3 +31,8 @@ data class AddHomeworkRequestModel(
     val subject_id: String,
     val text: String
 )
+
+data class AddCommentRequestModel(
+    val subject_id: String,
+    val text: String
+)
