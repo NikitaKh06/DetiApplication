@@ -1,6 +1,5 @@
 package com.example.detiapplication.presentation.viewmodels
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,7 +20,7 @@ class HomeViewModel(
     ) : ViewModel() {
 
     var loadingStatus = mutableStateOf(false)
-    var listOfSubjects = MutableLiveData<List<ReadListOfSubjectsReceiveModel>>()
+    var listOfSubjects = MutableLiveData<MutableList<ReadListOfSubjectsReceiveModel>>()
     var fullSubject = MutableLiveData<ReadFullSubjectReceiveModel>()
     var childrenProfile = MutableLiveData<ReadChildrenProfileResponseModel>()
     var parentProfile = MutableLiveData<ReadParentProfileResponseModel>()
@@ -41,7 +40,7 @@ class HomeViewModel(
         viewModelScope.launch {
             try {
                 val response = request.readListOfSubjectsFromChildren(model)
-                listOfSubjects.value = response.body()
+                listOfSubjects.value = response.body()?.toMutableList()
                 loadingStatus.value = false
             } catch (_: Exception) {  }
         }
@@ -53,10 +52,14 @@ class HomeViewModel(
         viewModelScope.launch {
             try {
                 val response = request.readListOfSubjectsFromParent(model)
-                listOfSubjects.value = response.body()
+                listOfSubjects.value = response.body()?.toMutableList()
                 loadingStatus.value = false
             } catch (_: Exception) {  }
         }
+    }
+
+    fun cleanList() {
+        listOfSubjects.value?.clear()
     }
 
     fun readFullSubject(model: ReadFullSubjectRequestModel) {
@@ -64,7 +67,6 @@ class HomeViewModel(
         loadingStatus.value = true
         viewModelScope.launch {
             try {
-                Log.d("MyLog", "Start request")
                 val response = request.readFullSubject(model)
                 if(response.body()?.comment?.isEmpty() == true) {
                     fullSubject.value = ReadFullSubjectReceiveModel(
@@ -102,6 +104,17 @@ class HomeViewModel(
         viewModelScope.launch {
             try {
                 val response = request.addComment(model)
+            } catch (_: Exception) {  }
+            loadingStatus.value = false
+        }
+    }
+
+    fun addSubject(model: AddSubjectRequestModel) {
+        val request = SubjectsApi.create()
+        loadingStatus.value = true
+        viewModelScope.launch {
+            try {
+                val response = request.addSubject(model)
             } catch (_: Exception) {  }
             loadingStatus.value = false
         }

@@ -30,7 +30,7 @@ import org.koin.androidx.compose.koinViewModel
 fun ChildrenProfileFromParentScreen(viewModel: HomeViewModel = koinViewModel()) {
     val parentToken = viewModel.getParentToken().token
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
-    var childrenProfile = remember {
+    val childrenProfile = remember {
         mutableStateOf(
             ReadChildrenProfileFromParentResponseModel("Загрузка..", "", "...", photo = "")
         )
@@ -92,7 +92,8 @@ fun ChildrenProfileFromParentScreen(viewModel: HomeViewModel = koinViewModel()) 
                         style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight(800)),
                         modifier = Modifier
                             .fillMaxSize()
-                            .wrapContentSize(Alignment.Center)
+                            .wrapContentSize(Alignment.Center),
+                        color = Black
                     )
                 }
             }

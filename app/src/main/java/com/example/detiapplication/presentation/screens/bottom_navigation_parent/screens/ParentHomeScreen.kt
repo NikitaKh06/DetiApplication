@@ -1,22 +1,28 @@
 package com.example.detiapplication.presentation.screens.bottom_navigation_parent.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
+import com.example.detiapplication.presentation.home_models.AddSubjectRequestModel
 import com.example.detiapplication.presentation.home_models.ReadListOfSubjectsReceiveModel
 import com.example.detiapplication.presentation.home_models.ReadListOfSubjectsRequestModel
 import com.example.detiapplication.presentation.screens.CircularProgressBar
@@ -27,20 +33,35 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ParentHomeScreen(navController: NavController, bottomPaddingValues: PaddingValues, viewModel: HomeViewModel = koinViewModel()) {
-
+    val daysList = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
     val parentToken = viewModel.getParentToken().token
-    var listOfSubjects = listOf<ReadListOfSubjectsReceiveModel>()
+    var listOfSubjects = remember {
+        mutableListOf<ReadListOfSubjectsReceiveModel>()
+    }
+    val addSubjectDialogState  = remember { mutableStateOf(false) }
+    val day = remember { mutableStateOf(daysList[0]) }
+    val expanded = remember { mutableStateOf(false) }
+    val requestState = remember { mutableStateOf(true) }
+    val menuState = remember { mutableStateOf(false) }
 
-    viewModel.readListOfSubjectsFromParent(
-        ReadListOfSubjectsRequestModel(
-            token = parentToken,
-            day = "Sunday"
+    if(addSubjectDialogState.value) {
+        AddSubjectScreen(addDialogState = addSubjectDialogState, viewModel = viewModel, daysList = daysList)
+    }
+
+    if(requestState.value) {
+        viewModel.readListOfSubjectsFromParent(
+            ReadListOfSubjectsRequestModel(
+                token = parentToken,
+                day = day.value
+            )
         )
-    )
+        requestState.value = false
+    }
 
     viewModel.listOfSubjects.observe(lifecycleOwner) {
-        listOfSubjects = viewModel.listOfSubjects.value!!
+        listOfSubjects = it
+        menuState.value = true
     }
 
     Column(
@@ -52,14 +73,14 @@ fun ParentHomeScreen(navController: NavController, bottomPaddingValues: PaddingV
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 30.dp, end = 30.dp, top = 30.dp)
-                .height(70.dp),
+                .height(60.dp),
             shape = RoundedCornerShape(20.dp),
             colors = ButtonDefaults.buttonColors(LightOrange),
             onClick = {
                 navController.navigate(HomeScreens.ChildrenProfileFromParent.route)
             }
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(horizontalAlignment = CenterHorizontally) {
                 Text(
                     text = "Профиль ребенка",
                     style = TextStyle(fontSize = 25.sp, fontWeight = FontWeight(800)),
@@ -67,12 +88,14 @@ fun ParentHomeScreen(navController: NavController, bottomPaddingValues: PaddingV
                 )
             }
         }
-
+        if(viewModel.loadingStatus.value) {
+            menuState.value = false
+        }
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(420.dp)
-                .padding(start = 30.dp, end = 30.dp, top = 30.dp),
+                .height(380.dp)
+                .padding(start = 30.dp, end = 30.dp, top = 15.dp),
             shape = RoundedCornerShape(20.dp)
         ) {
             Surface(color = GreenSomeLight) {
@@ -81,17 +104,22 @@ fun ParentHomeScreen(navController: NavController, bottomPaddingValues: PaddingV
                         .fillMaxSize()
                 ) {
                     Text(
-                        text = "Вторник",
+                        text = day.value,
                         style = TextStyle(fontSize = 25.sp, fontWeight = FontWeight(800)),
                         color = Color.White,
                         modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
+                            .align(CenterHorizontally)
+                            .clickable {
+                                if (menuState.value) {
+                                    expanded.value = true
+                                }
+                            }
                     )
                     CircularProgressBar(
                         isLoading = viewModel.loadingStatus.value,
                         modifier = Modifier
                             .fillMaxSize()
-                            .wrapContentSize(Alignment.Center),
+                            .wrapContentSize(Center),
                         color = Color.White
                     )
                     LazyColumn {
@@ -106,7 +134,7 @@ fun ParentHomeScreen(navController: NavController, bottomPaddingValues: PaddingV
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 30.dp, start = 29.dp, end = 29.dp),
+                .padding(top = 15.dp, start = 29.dp, end = 29.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Card(
@@ -122,7 +150,7 @@ fun ParentHomeScreen(navController: NavController, bottomPaddingValues: PaddingV
                     Column(
                         modifier = Modifier
                             .fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = CenterHorizontally
                     ) {
                         Text(
                             text = "15",
@@ -130,7 +158,7 @@ fun ParentHomeScreen(navController: NavController, bottomPaddingValues: PaddingV
                                 fontSize = 30.sp,
                                 fontWeight = FontWeight(800)
                             ),
-                            modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally),
+                            modifier = Modifier.wrapContentWidth(CenterHorizontally),
                             color = Black
                         )
                         Text(
@@ -139,7 +167,7 @@ fun ParentHomeScreen(navController: NavController, bottomPaddingValues: PaddingV
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight(800)
                             ),
-                            modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally),
+                            modifier = Modifier.wrapContentWidth(CenterHorizontally),
                             color = Black
                         )
                     }
@@ -161,9 +189,65 @@ fun ParentHomeScreen(navController: NavController, bottomPaddingValues: PaddingV
                         ),
                         modifier = Modifier
                             .fillMaxSize()
-                            .wrapContentSize(Alignment.Center),
+                            .wrapContentSize(Center),
                         color = Black
                     )
+                }
+            }
+        }
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 30.dp, end = 30.dp, top = 15.dp)
+                .height(70.dp),
+            shape = RoundedCornerShape(20.dp),
+            colors = ButtonDefaults.buttonColors(GreenSomeLight),
+            onClick = {
+                addSubjectDialogState.value = true
+            }
+        ) {
+            Column(horizontalAlignment = CenterHorizontally) {
+                Text(
+                    text = "Добавить предмет",
+                    style = TextStyle(fontSize = 25.sp, fontWeight = FontWeight(800)),
+                    color = Color.White
+                )
+            }
+        }
+
+        Box(modifier = Modifier.fillMaxWidth()) {
+            DropdownMenu(
+                expanded = expanded.value,
+                onDismissRequest = { expanded.value = false },
+                offset = DpOffset(x = 130.dp, y = 150.dp)
+            ) {
+                daysList.forEach {
+                    DropdownMenuItem(
+                        onClick = {
+                            requestState.value = true
+                            day.value = it
+                            expanded.value = false
+                            viewModel.cleanList()
+                            viewModel.readListOfSubjectsFromParent(
+                                ReadListOfSubjectsRequestModel(
+                                    token = parentToken,
+                                    day = day.value
+                                )
+                            )
+                        }
+                    ) {
+                        Text(
+                            text = when(it) {
+                                daysList[0] -> "Понедельник"
+                                daysList[1] -> "Вторник"
+                                daysList[2] -> "Среда"
+                                daysList[3] -> "Четверг"
+                                daysList[4] -> "Пятница"
+                                daysList[5] -> "Суббота"
+                                else -> "Воскресенье"
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -201,4 +285,130 @@ fun SubjectElementParent(model: ReadListOfSubjectsReceiveModel, navController: N
             }
         }
     }
+}
+
+@Composable
+fun AddSubjectScreen(
+    addDialogState: MutableState<Boolean>, viewModel: HomeViewModel, daysList: List<String>
+) {
+    val context = LocalContext.current
+    val parentToken = viewModel.getParentToken().token
+    val text = remember {
+        mutableStateOf("")
+    }
+    var expanded by remember { mutableStateOf(false) }
+    val day = remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = { addDialogState.value = false },
+        shape = RoundedCornerShape(20.dp),
+        title = {
+            Column {
+                Text(
+                    text = "Добавление занятия",
+                    style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight(800)),
+                    color = Black,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentWidth(CenterHorizontally)
+                )
+                Text(
+                    text = "Название",
+                    style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight(800)),
+                    color = LightBlack,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentWidth(Alignment.Start)
+                        .padding(top = 15.dp)
+                )
+
+                OutlinedTextField(
+                    value = text.value,
+                    onValueChange = { text.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentWidth(CenterHorizontally)
+                        .padding(top = 3.dp),
+                    shape = RoundedCornerShape(20.dp)
+                )
+
+                Button(
+                    onClick = {
+                        expanded = true
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(70.dp)
+                        .padding(top = 15.dp),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = ButtonDefaults.buttonColors(LightOrange)
+                ) {
+                    Text(
+                        text = "День недели",
+                        style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight(800)),
+                        color = Black
+                    )
+                }
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    daysList.forEach {
+                        DropdownMenuItem(
+                            onClick = {
+                                day.value = it
+                                expanded = false
+                            }
+                        ) {
+                            Text(
+                                text = when(it) {
+                                    daysList[0] -> "Понедельник"
+                                    daysList[1] -> "Вторник"
+                                    daysList[2] -> "Среда"
+                                    daysList[3] -> "Четверг"
+                                    daysList[4] -> "Пятница"
+                                    daysList[5] -> "Суббота"
+                                    else -> "Воскресенье"
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    if(day.value.isNotEmpty() && text.value.isNotEmpty()) {
+                        viewModel.addSubject(
+                            AddSubjectRequestModel(
+                                token = parentToken,
+                                title = text.value,
+                                day = day.value,
+                                hours = "00",
+                                minutes = "00"
+                            )
+                        )
+                        addDialogState.value = false
+                        day.value = ""
+                    }
+                    else {
+                        Toast.makeText(context, "Заполните данные занятия", Toast.LENGTH_SHORT).show()
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(LightOrange),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 15.dp, start = 20.dp, end = 20.dp, bottom = 20.dp)
+                    .height(60.dp),
+                shape = RoundedCornerShape(20.dp)
+            ) {
+                Text(
+                    text = "Добавить",
+                    style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight(800)),
+                    color = Black
+                )
+            }
+        }
+    )
 }

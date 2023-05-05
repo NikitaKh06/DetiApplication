@@ -12,6 +12,11 @@ import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
 
+    //Сделать выбор дня недели у ребенка
+    //Добавить экран маршрута на всякий случай
+    //Разобраться со Splash screen
+    //Добавить экраны обучения
+
     private lateinit var navController: NavHostController
 
     val childrenRegistrationRepository: ChildrenRegistrationRepository by inject()

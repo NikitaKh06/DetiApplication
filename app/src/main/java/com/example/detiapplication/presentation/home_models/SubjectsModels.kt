@@ -36,3 +36,11 @@ data class AddCommentRequestModel(
     val subject_id: String,
     val text: String
 )
+
+data class AddSubjectRequestModel(
+    val token: String,
+    val title: String,
+    val day: String,
+    val hours: String,
+    val minutes: String
+)
