@@ -329,7 +329,10 @@ fun AddSubjectScreen(
                         .fillMaxWidth()
                         .wrapContentWidth(CenterHorizontally)
                         .padding(top = 3.dp),
-                    shape = RoundedCornerShape(20.dp)
+                    shape = RoundedCornerShape(20.dp),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Green
+                    )
                 )
 
                 Button(

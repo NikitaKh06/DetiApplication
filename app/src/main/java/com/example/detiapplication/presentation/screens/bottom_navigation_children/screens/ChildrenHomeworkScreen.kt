@@ -22,10 +22,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.example.detiapplication.presentation.home_models.AddHomeworkRequestModel
 import com.example.detiapplication.presentation.home_models.ReadFullSubjectRequestModel
 import com.example.detiapplication.presentation.screens.CircularProgressBar
-import com.example.detiapplication.presentation.theme.Black
-import com.example.detiapplication.presentation.theme.GreenSomeLight
-import com.example.detiapplication.presentation.theme.LightBlack
-import com.example.detiapplication.presentation.theme.LightOrange
+import com.example.detiapplication.presentation.theme.*
 import com.example.detiapplication.presentation.viewmodels.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -228,7 +225,10 @@ fun AddScreen(addDialogState: MutableState<Boolean>, viewModel: HomeViewModel, i
                         .fillMaxWidth()
                         .wrapContentWidth(CenterHorizontally)
                         .padding(top = 20.dp),
-                    shape = RoundedCornerShape(20.dp)
+                    shape = RoundedCornerShape(20.dp),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Green
+                    )
                 )
             }
         },

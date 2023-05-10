@@ -74,7 +74,8 @@ fun ChildrenSignInScreen(navController: NavController, viewModel: MainViewModel 
                 .fillMaxWidth(),
             shape = RoundedCornerShape(15.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                unfocusedBorderColor = if(wrongEmail.value) LightRed else LightBlack
+                unfocusedBorderColor = if(wrongEmail.value) LightRed else LightBlack,
+                focusedBorderColor = if(wrongEmail.value) LightRed else Green
             ),
             label = {
                 Text(
@@ -96,7 +97,8 @@ fun ChildrenSignInScreen(navController: NavController, viewModel: MainViewModel 
                 .fillMaxWidth(),
             shape = RoundedCornerShape(15.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                unfocusedBorderColor = if(wrongPassword.value) LightRed else LightBlack
+                unfocusedBorderColor = if(wrongPassword.value) LightRed else LightBlack,
+                focusedBorderColor = if(wrongPassword.value) LightRed else Green
             ),
             label = {
                 Text(
@@ -279,7 +281,8 @@ fun ChidlrenRegistrationScreen(navController: NavController) {
                 )
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                unfocusedBorderColor = if(wrongEmail.value) LightRed else LightBlack
+                unfocusedBorderColor = if(wrongEmail.value) LightRed else LightBlack,
+                focusedBorderColor = if(wrongEmail.value) LightRed else Green
             )
         )
 
@@ -298,7 +301,8 @@ fun ChidlrenRegistrationScreen(navController: NavController) {
                 )
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                unfocusedBorderColor = if(wrongPassword.value) LightRed else LightBlack
+                unfocusedBorderColor = if(wrongPassword.value) LightRed else LightBlack,
+                focusedBorderColor = if(wrongPassword.value) LightRed else Green
             )
         )
         
@@ -396,7 +400,8 @@ fun ChildrenInfoScreen(
                 )
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                unfocusedBorderColor = if(wrongFirstName.value) LightRed else LightBlack
+                unfocusedBorderColor = if(wrongFirstName.value) LightRed else LightBlack,
+                focusedBorderColor = if(wrongFirstName.value) LightRed else Green
             )
         )
 
@@ -415,7 +420,8 @@ fun ChildrenInfoScreen(
                 )
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                unfocusedBorderColor = if(wrongLastName.value) LightRed else LightBlack
+                unfocusedBorderColor = if(wrongLastName.value) LightRed else LightBlack,
+                focusedBorderColor = if(wrongLastName.value) LightRed else Green
             )
         )
 
@@ -434,7 +440,8 @@ fun ChildrenInfoScreen(
                 )
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                unfocusedBorderColor = if(wrongAge.value) LightRed else LightBlack
+                unfocusedBorderColor = if(wrongAge.value) LightRed else LightBlack,
+                focusedBorderColor = if(wrongAge.value) LightRed else Green
             )
         )
 
