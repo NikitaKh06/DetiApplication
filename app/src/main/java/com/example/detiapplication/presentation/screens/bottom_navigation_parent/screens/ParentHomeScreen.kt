@@ -30,6 +30,8 @@ import com.example.detiapplication.presentation.screens.HomeScreens
 import com.example.detiapplication.presentation.theme.*
 import com.example.detiapplication.presentation.viewmodels.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun ParentHomeScreen(navController: NavController, bottomPaddingValues: PaddingValues, viewModel: HomeViewModel = koinViewModel()) {
@@ -44,6 +46,13 @@ fun ParentHomeScreen(navController: NavController, bottomPaddingValues: PaddingV
     val expanded = remember { mutableStateOf(false) }
     val requestState = remember { mutableStateOf(true) }
     val menuState = remember { mutableStateOf(false) }
+
+    val calendar = Calendar.getInstance()
+    val time = calendar.time
+    val dayOfWeek = SimpleDateFormat("EEEE", Locale.ENGLISH).format(time.time)
+    val monthString = SimpleDateFormat("MMM", Locale.ENGLISH).format(time.time)
+    val dayNumber = SimpleDateFormat("dd", Locale.ENGLISH).format(time.time)
+
 
     if(addSubjectDialogState.value) {
         AddSubjectScreen(addDialogState = addSubjectDialogState, viewModel = viewModel, daysList = daysList)
@@ -153,7 +162,7 @@ fun ParentHomeScreen(navController: NavController, bottomPaddingValues: PaddingV
                         horizontalAlignment = CenterHorizontally
                     ) {
                         Text(
-                            text = "15",
+                            text = dayNumber,
                             style = TextStyle(
                                 fontSize = 30.sp,
                                 fontWeight = FontWeight(800)
@@ -162,7 +171,19 @@ fun ParentHomeScreen(navController: NavController, bottomPaddingValues: PaddingV
                             color = Black
                         )
                         Text(
-                            text = "Октября",
+                            text = when(monthString) {
+                                "January" -> "Января"
+                                "February" -> "Февраля"
+                                "March" -> "Марта"
+                                "April" -> "Апреля"
+                                "May" -> "Мая"
+                                "June" -> "Июнь"
+                                "July" -> "Июль"
+                                "August" -> "Августа"
+                                "September" -> "Сентябрь"
+                                "October" -> "Октябрь"
+                                "November" -> "Ноябрь"
+                                else-> "Декабрь" },
                             style = TextStyle(
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight(800)
@@ -182,7 +203,15 @@ fun ParentHomeScreen(navController: NavController, bottomPaddingValues: PaddingV
             ) {
                 Surface(color = LightOrange) {
                     Text(
-                        text = "Понедельник",
+                        text = when(dayOfWeek) {
+                            daysList[0] -> "Понедельник"
+                            daysList[1] -> "Вторник"
+                            daysList[2] -> "Среда"
+                            daysList[3] -> "Четверг"
+                            daysList[4] -> "Пятница"
+                            daysList[5] -> "Суббота"
+                            else -> "Воскресенье"
+                        },
                         style = TextStyle(
                             fontSize = 23.sp,
                             fontWeight = FontWeight(800)
@@ -226,6 +255,7 @@ fun ParentHomeScreen(navController: NavController, bottomPaddingValues: PaddingV
                         onClick = {
                             requestState.value = true
                             day.value = it
+                            viewModel.changeDay(day = day.value)
                             expanded.value = false
                             viewModel.cleanList()
                             viewModel.readListOfSubjectsFromParent(
@@ -234,6 +264,7 @@ fun ParentHomeScreen(navController: NavController, bottomPaddingValues: PaddingV
                                     day = day.value
                                 )
                             )
+
                         }
                     ) {
                         Text(

@@ -2,6 +2,7 @@ package com.example.detiapplication.presentation.screens.bottom_navigation_child
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,6 +10,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,6 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LifecycleOwner
@@ -26,24 +30,51 @@ import com.example.detiapplication.presentation.screens.CircularProgressBar
 import com.example.detiapplication.presentation.theme.*
 import com.example.detiapplication.presentation.viewmodels.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 @Composable
 fun ChildrenHomeScreen(navController: NavController, bottomPaddingValues: PaddingValues, viewModel: HomeViewModel = koinViewModel()) {
+    val daysList = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+    val menuState = remember { mutableStateOf(false) }
+    val requestState = remember { mutableStateOf(true) }
+    val expanded = remember { mutableStateOf(false) }
+    val day = remember { mutableStateOf(viewModel.weekDay.value!!) }
+    val textDay = remember { mutableStateOf(when(day.value) {
+        daysList[0] -> "Понедельник"
+        daysList[1] -> "Вторник"
+        daysList[2] -> "Среда"
+        daysList[3] -> "Четверг"
+        daysList[4] -> "Пятница"
+        daysList[5] -> "Суббота"
+        else -> "Воскресенье"
+    }) }
+    val calendar = Calendar.getInstance()
+    val time = calendar.time
+    val dayOfWeek = SimpleDateFormat("EEEE", Locale.ENGLISH).format(time.time)
+    val monthString = SimpleDateFormat("MMM", Locale.ENGLISH).format(time.time)
+    val dayNumber = SimpleDateFormat("dd", Locale.ENGLISH).format(time.time)
+
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
     val childrenToken = viewModel.getChildrenToken().token
     var listOfSubjects = listOf<ReadListOfSubjectsReceiveModel>()
     val context = LocalContext.current
 
-    viewModel.readListOfSubjectsFromChildren(
-        ReadListOfSubjectsRequestModel(
-            token = childrenToken,
-            day = "Sunday"
+
+    if(requestState.value) {
+        viewModel.readListOfSubjectsFromChildren(
+            ReadListOfSubjectsRequestModel(
+                token = childrenToken,
+                day = day.value
+            )
         )
-    )
+        requestState.value = false
+    }
 
     viewModel.listOfSubjects.observe(lifecycleOwner) {
         listOfSubjects = viewModel.listOfSubjects.value!!
+        menuState.value = true
     }
 
     Column(
@@ -64,11 +95,16 @@ fun ChildrenHomeScreen(navController: NavController, bottomPaddingValues: Paddin
                         .fillMaxSize()
                 ) {
                     Text(
-                        text = "Вторник",
+                        text = textDay.value,
                         style = TextStyle(fontSize = 25.sp, fontWeight = FontWeight(800)),
                         color = Color.White,
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
+                            .clickable {
+                                if (menuState.value) {
+                                    expanded.value = true
+                                }
+                            }
                     )
                     CircularProgressBar(
                         isLoading = viewModel.loadingStatus.value,
@@ -108,7 +144,7 @@ fun ChildrenHomeScreen(navController: NavController, bottomPaddingValues: Paddin
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "15",
+                            text = dayNumber,
                             style = TextStyle(
                                 fontSize = 30.sp,
                                 fontWeight = FontWeight(800)
@@ -117,7 +153,20 @@ fun ChildrenHomeScreen(navController: NavController, bottomPaddingValues: Paddin
                             color = Black
                         )
                         Text(
-                            text = "Октября",
+                            text = when(monthString) {
+                                "January" -> "Января"
+                                "February" -> "Февраля"
+                                "March" -> "Марта"
+                                "April" -> "Апреля"
+                                "May" -> "Мая"
+                                "June" -> "Июнь"
+                                "July" -> "Июль"
+                                "August" -> "Августа"
+                                "September" -> "Сентябрь"
+                                "October" -> "Октябрь"
+                                "November" -> "Ноябрь"
+                                else-> "Декабрь" },
+
                             style = TextStyle(
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight(800)
@@ -137,7 +186,15 @@ fun ChildrenHomeScreen(navController: NavController, bottomPaddingValues: Paddin
             ) {
                 Surface(color = LightOrange) {
                     Text(
-                        text = "Понедельник",
+                        text = when(dayOfWeek) {
+                            daysList[0] -> "Понедельник"
+                            daysList[1] -> "Вторник"
+                            daysList[2] -> "Среда"
+                            daysList[3] -> "Четверг"
+                            daysList[4] -> "Пятница"
+                            daysList[5] -> "Суббота"
+                            else -> "Воскресенье"
+                        },
                         style = TextStyle(
                             fontSize = 23.sp,
                             fontWeight = FontWeight(800)
@@ -172,6 +229,53 @@ fun ChildrenHomeScreen(navController: NavController, bottomPaddingValues: Paddin
                     style = TextStyle(fontSize = 23.sp, fontWeight = FontWeight(800)),
                     color = Color.White
                 )
+            }
+        }
+        Log.d("MyLog", day.value)
+        Box(modifier = Modifier.fillMaxWidth()) {
+            DropdownMenu(
+                expanded = expanded.value,
+                onDismissRequest = { expanded.value = false },
+                offset = DpOffset(x = 130.dp, y = 150.dp)
+            ) {
+                daysList.forEach {
+                    DropdownMenuItem(
+                        onClick = {
+                            requestState.value = true
+                            day.value = it
+                            expanded.value = false
+                            viewModel.cleanList()
+                            viewModel.readListOfSubjectsFromChildren(
+                                ReadListOfSubjectsRequestModel(
+                                    token = childrenToken,
+                                    day = day.value
+                                )
+                            )
+                            viewModel.changeDay(day = day.value)
+                            textDay.value = when(day.value) {
+                                daysList[0] -> "Понедельник"
+                                daysList[1] -> "Вторник"
+                                daysList[2] -> "Среда"
+                                daysList[3] -> "Четверг"
+                                daysList[4] -> "Пятница"
+                                daysList[5] -> "Суббота"
+                                else -> "Воскресенье"
+                            }
+                        }
+                    ) {
+                        Text(
+                            text = when(it) {
+                                daysList[0] -> "Понедельник"
+                                daysList[1] -> "Вторник"
+                                daysList[2] -> "Среда"
+                                daysList[3] -> "Четверг"
+                                daysList[4] -> "Пятница"
+                                daysList[5] -> "Суббота"
+                                else -> "Воскресенье"
+                            }
+                        )
+                    }
+                }
             }
         }
     }

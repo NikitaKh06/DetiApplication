@@ -25,6 +25,11 @@ class HomeViewModel(
     var childrenProfile = MutableLiveData<ReadChildrenProfileResponseModel>()
     var parentProfile = MutableLiveData<ReadParentProfileResponseModel>()
     var childrenProfileFromParent = MutableLiveData<ReadChildrenProfileFromParentResponseModel>()
+    var weekDay = MutableLiveData("Monday")
+
+    fun changeDay(day: String) {
+        weekDay.value = day
+    }
 
     fun getParentToken() : GetParentToken {
         return parentRegistrationRepository.getToken()
