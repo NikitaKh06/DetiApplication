@@ -159,14 +159,13 @@ fun ChildrenHomeScreen(navController: NavController, bottomPaddingValues: Paddin
                                 "March" -> "Марта"
                                 "April" -> "Апреля"
                                 "May" -> "Мая"
-                                "June" -> "Июнь"
-                                "July" -> "Июль"
+                                "June" -> "Июня"
+                                "July" -> "Июля"
                                 "August" -> "Августа"
-                                "September" -> "Сентябрь"
+                                "September" -> "Сентября"
                                 "October" -> "Октябрь"
-                                "November" -> "Ноябрь"
-                                else-> "Декабрь" },
-
+                                "November" -> "Ноября"
+                                else-> "Декабря" },
                             style = TextStyle(
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight(800)

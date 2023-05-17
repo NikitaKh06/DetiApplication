@@ -42,10 +42,20 @@ fun ParentHomeScreen(navController: NavController, bottomPaddingValues: PaddingV
         mutableListOf<ReadListOfSubjectsReceiveModel>()
     }
     val addSubjectDialogState  = remember { mutableStateOf(false) }
-    val day = remember { mutableStateOf(daysList[0]) }
+    val day = remember { mutableStateOf(viewModel.weekDay.value!!) }
     val expanded = remember { mutableStateOf(false) }
     val requestState = remember { mutableStateOf(true) }
     val menuState = remember { mutableStateOf(false) }
+
+    val textDay = remember { mutableStateOf(when(day.value) {
+        daysList[0] -> "Понедельник"
+        daysList[1] -> "Вторник"
+        daysList[2] -> "Среда"
+        daysList[3] -> "Четверг"
+        daysList[4] -> "Пятница"
+        daysList[5] -> "Суббота"
+        else -> "Воскресенье"
+    }) }
 
     val calendar = Calendar.getInstance()
     val time = calendar.time
@@ -113,7 +123,7 @@ fun ParentHomeScreen(navController: NavController, bottomPaddingValues: PaddingV
                         .fillMaxSize()
                 ) {
                     Text(
-                        text = day.value,
+                        text = textDay.value,
                         style = TextStyle(fontSize = 25.sp, fontWeight = FontWeight(800)),
                         color = Color.White,
                         modifier = Modifier
@@ -177,13 +187,13 @@ fun ParentHomeScreen(navController: NavController, bottomPaddingValues: PaddingV
                                 "March" -> "Марта"
                                 "April" -> "Апреля"
                                 "May" -> "Мая"
-                                "June" -> "Июнь"
-                                "July" -> "Июль"
+                                "June" -> "Июня"
+                                "July" -> "Июля"
                                 "August" -> "Августа"
-                                "September" -> "Сентябрь"
-                                "October" -> "Октябрь"
-                                "November" -> "Ноябрь"
-                                else-> "Декабрь" },
+                                "September" -> "Сентября"
+                                "October" -> "Октября"
+                                "November" -> "Ноября"
+                                else-> "Декабря" },
                             style = TextStyle(
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight(800)
@@ -255,7 +265,7 @@ fun ParentHomeScreen(navController: NavController, bottomPaddingValues: PaddingV
                         onClick = {
                             requestState.value = true
                             day.value = it
-                            viewModel.changeDay(day = day.value)
+                            viewModel.changeDay(day = it)
                             expanded.value = false
                             viewModel.cleanList()
                             viewModel.readListOfSubjectsFromParent(

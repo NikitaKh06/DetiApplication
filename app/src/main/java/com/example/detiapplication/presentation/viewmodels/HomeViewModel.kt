@@ -13,6 +13,8 @@ import com.example.detiapplication.data.repositories.children_repositories.Child
 import com.example.detiapplication.data.repositories.parent_repositories.*
 import com.example.detiapplication.presentation.home_models.*
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 class HomeViewModel(
     private val parentRegistrationRepository: ParentRegistrationRepository,
@@ -25,7 +27,10 @@ class HomeViewModel(
     var childrenProfile = MutableLiveData<ReadChildrenProfileResponseModel>()
     var parentProfile = MutableLiveData<ReadParentProfileResponseModel>()
     var childrenProfileFromParent = MutableLiveData<ReadChildrenProfileFromParentResponseModel>()
-    var weekDay = MutableLiveData("Monday")
+    val calendar = Calendar.getInstance()
+    val time = calendar.time
+    val dayOfWeek = SimpleDateFormat("EEEE", Locale.ENGLISH).format(time.time)
+    var weekDay = MutableLiveData(dayOfWeek)
 
     fun changeDay(day: String) {
         weekDay.value = day
